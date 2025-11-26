@@ -13,6 +13,8 @@ class Vitima(db.Model):
     setor_cargo = db.Column(db.String(255), nullable=False)
     genero = db.Column(db.String(25), nullable=False)
     
+    denuncias = db.relationship("Denuncia", back_populates="vitima")
+    
     def __init__(self, nome, matricula, idade, telefone, email, setor_cargo, genero):
         self.nome = nome
         self.matricula = matricula

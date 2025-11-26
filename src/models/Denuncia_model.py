@@ -11,6 +11,12 @@ class Denuncia(db.Model):
     testemunha = db.Column(db.String(10), nullable=False)
     descricao_do_fato = db.Column(db.Text, nullable=False)
     
+    vitima_id = db.Column(db.Integer, db.ForeignKey("vitimas.id"), nullable=False)
+    ofesor_id = db.Column(db.Integer, db.ForeignKey("ofesors.id"), nullable=False)
+    
+    vitima = db.relationship("Vitima", back_populates="denuncias")
+    ofesor = db.relationship("Ofesor", back_populates="denuncias")
+    
     def __init__(self, categoria, frequencia, data, testemunha, descricao_do_fato):
         self.categoria = categoria
         self.frequencia = frequencia

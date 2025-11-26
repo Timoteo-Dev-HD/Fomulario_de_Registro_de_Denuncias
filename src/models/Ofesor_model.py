@@ -9,6 +9,8 @@ class Ofesor(db.Model):
     setor_cargo = db.Column(db.String(100), nullable=False)
     descricao = db.Column(db.Text, nullable=False)
     
+    denuncias = db.relationship("Denuncia", back_populates="ofesor")
+    
     def __init__(self, nome, setor_cargo, descricao):
         self.nome = nome
         self.setor_cargo = setor_cargo
