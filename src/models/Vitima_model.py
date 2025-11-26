@@ -6,7 +6,6 @@ class Vitima(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(150), nullable=False)
-    matricula = db.Column(db.Integer, nullable=False, unique=True)
     idade = db.Column(db.Integer, nullable=False)
     telefone = db.Column(db.String(10), nullable=False)
     email = db.Column(db.String(255), nullable=False)
@@ -17,7 +16,6 @@ class Vitima(db.Model):
     
     def __init__(self, nome, matricula, idade, telefone, email, setor_cargo, genero):
         self.nome = nome
-        self.matricula = matricula
         self.idade = idade
         self.telefone = telefone
         self.email = email
