@@ -1,0 +1,114 @@
+/* ===== Dark theme elegante ===== */
+:root {
+    --bg: #0f0f11;
+    --surface: #1b1c1f;
+    --border: #2b2c31;
+    --text: #e9e9ec;
+    --muted: #b3b3bb;
+    --primary: #4f7dff;
+    --primary-hover: #3c64db;
+}
+
+body {
+    background: var(--bg);
+}
+
+/* ===== Centralização ===== */
+.login-wrapper {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== Card ===== */
+.login-box {
+    background: var(--surface);
+    padding: 44px 38px;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    box-shadow: 0 0 30px rgba(0,0,0,0.35);
+    animation: fadeIn .4s ease;
+}
+
+/* ===== Título ===== */
+.login-box h1 {
+    text-align: center;
+    color: var(--text);
+    font-size: 26px;
+    margin-bottom: 32px;
+    font-weight: 600;
+}
+
+.login-box h1 i {
+    color: var(--primary);
+    margin-right: 8px;
+}
+
+/* ===== Inputs com ícones ===== */
+.input-group {
+    display: flex;
+    align-items: center;
+    background: #111114;
+    border: 1px solid var(--border);
+    padding: 13px 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    transition: 0.25s;
+}
+
+.input-group i {
+    color: var(--muted);
+    margin-right: 12px;
+    font-size: 15px;
+}
+
+.input-group input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    width: 100%;
+    font-size: 15px;
+}
+
+/* Hover e foco */
+.input-group:hover,
+.input-group:focus-within {
+    border-color: var(--primary);
+}
+
+/* ===== Botão ===== */
+button {
+    width: 100%;
+    background: var(--primary);
+    border: none;
+    padding: 13px;
+    font-size: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    color: white;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    align-items: center;
+    transition: 0.25s;
+}
+
+button i {
+    font-size: 15px;
+}
+
+button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+/* ===== Animação suave ===== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
