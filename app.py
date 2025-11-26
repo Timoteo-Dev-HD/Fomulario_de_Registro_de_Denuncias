@@ -1,7 +1,7 @@
 from flask import Flask
 
 from src.settings.config import Config
-from src.settings.extesions import db
+from src.settings.extensions import db
 
 app = Flask(
     __name__,
@@ -12,9 +12,13 @@ app.config.from_object(Config)
 
 db.init_app(app=app)
 
-from src.models import *
+# Models para importa o metadata
+from src.models import Usuario_model
+from src.models import Vitima_model
+from src.models import Ofesor_model
+from src.models import Denuncia_model
 
-
+# Routes do Controllers
 
 
 
