@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Área Administrativa{% endblock %}
+
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="admin-home">
+
+    <h1>
+        <svg class="icon-lg" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 12.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5zM4.5 20.25a8.25 8.25 0 0116.5 0v.75H4.5v-.75z"/>
+        </svg>
+        Área Administrativa
+    </h1>
+
+    <p>
+        Bem-vindo ao painel de controle.  
+        Esta é uma área restrita — apenas usuários autorizados podem acessar.
+    </p>
+
+    <a href="{{ url_for('admin.login_admin') }}" class="btn-primary">
+        Acessar Login Administrativo
+    </a>
+</section>
+{% endblock %}

@@ -1,0 +1,116 @@
+/* Fonte clean e moderna */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+    --bg-primary: #0f0f0f;
+    --bg-secondary: #1a1a1a;
+    --bg-tertiary: #222;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --accent: #6f66ff; /* roxo suave elegante */
+}
+
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg-primary);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ===== NAVBAR ===== */
+header {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid #2b2b2b;
+    padding: 14px 0;
+}
+
+nav {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    position: relative;
+}
+
+/* Linha hover bonita */
+nav a::after {
+    content: "";
+    width: 0%;
+    height: 2px;
+    background: var(--accent);
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    transition: width 0.2s ease-in-out;
+}
+
+nav a:hover {
+    color: var(--accent);
+}
+
+nav a:hover::after {
+    width: 100%;
+}
+
+/* ===== CONTEÚDO PRINCIPAL ===== */
+main {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+    flex: 1;
+}
+
+/* ===== FOOTER ===== */
+footer {
+    background: var(--bg-secondary);
+    text-align: center;
+    padding: 18px 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    border-top: 1px solid #2b2b2b;
+}
+
+footer p {
+    opacity: 0.7;
+}
+
+/* ===== ELEMENTOS GLOBAIS ===== */
+h1, h2, h3 {
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+button {
+    font-family: inherit;
+}
+
+/* Ícones no nav (opcional se usar SVG) */
+.icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 6px;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+nav a:hover .icon {
+    opacity: 1;
+}

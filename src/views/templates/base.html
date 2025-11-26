@@ -4,36 +4,45 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Título da página -->
     <title>{% block title %}Minha Aplicação{% endblock %}</title>
 
-    <!-- CSS global -->
+    <!-- CSS Global -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
+    {% block styles %}{% endblock %}
     {% block head %}{% endblock %}
 </head>
 <body>
 
-    <!-- Navbar opcional -->
+    <!-- NAVBAR -->
     <header>
-        {% block header %}
         <nav>
-            <a href="/">Início</a>
+            <a href="/admin/">
+                <!-- SVG opcional -->
+                <svg class="icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 2L2 8h2v8h4v-5h4v5h4V8h2L10 2z"/>
+                </svg>
+                Início
+            </a>
+
+            <a href="/admin/login">
+                <svg class="icon" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 10a7 7 0 1112.9 4.58l1.42 1.42A9 9 0 102 10h1zm7-5v6l5 3-.75 1.23L9 12V5h1z"/>
+                </svg>
+                Login
+            </a>
         </nav>
-        {% endblock %}
     </header>
 
-    <!-- Conteúdo principal -->
+    <!-- CONTEÚDO PRINCIPAL -->
     <main>
-        {% block content %}
-        <!-- Cada página coloca seu conteúdo aqui -->
-        {% endblock %}
+        {% block content %}{% endblock %}
     </main>
 
-    <!-- Rodapé opcional -->
+    <!-- FOOTER -->
     <footer>
         {% block footer %}
-        <p>&copy; 2025 - Minha Aplicação</p>
+        <p>&copy; 2025 - Aplicação - Rafael Timóteo Costa Oliveira</p>
         {% endblock %}
     </footer>
 
