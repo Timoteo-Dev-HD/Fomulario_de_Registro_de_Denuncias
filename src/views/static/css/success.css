@@ -1,0 +1,124 @@
+/* ===== Dark theme elegante ===== */
+:root {
+    --bg: #0f0f11;
+    --surface: #1b1c1f;
+    --border: #2b2c31;
+    --text: #e9e9ec;
+    --muted: #b3b3bb;
+    --primary: #4f7dff;
+    --primary-hover: #3c64db;
+}
+
+/* ===== COR DE FUNDO GLOBAL ===== */
+body {
+    background: var(--bg);
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--text);
+}
+
+/* ===== Centralização ===== */
+.login-wrapper {
+    min-height: 60vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Container central */
+.success-box {
+    max-width: 700px;
+    margin: 60px auto;
+    background: var(--surface);
+    padding: 50px 45px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0,0,0,0.35);
+    animation: fadeIn .5s ease;
+}
+
+/* Ícone principal */
+.success-icon {
+    font-size: 58px;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+/* Título */
+.success-title {
+    font-size: 26px;
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+/* Texto */
+.success-text {
+    color: var(--muted);
+    font-size: 17px;
+    line-height: 1.7;
+    margin-bottom: 30px;
+}
+
+/* Botões */
+.success-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px 28px;
+    margin: 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+    transition: 0.25s;
+}
+
+/* Botão primário */
+.success-btn-primary {
+    background: var(--primary);
+    color: #fff;
+}
+.success-btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+/* Botão secundário */
+.success-btn-secondary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+.success-btn-secondary:hover {
+    background: #2a2b2f;
+    transform: translateY(-2px);
+}
+
+/* Animação */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Botão extra (versão antiga corrigida) */
+.success-btn {
+    width: 100%;
+    background: var(--primary);
+    border: none;
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    color: white;
+    font-weight: 500;
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    transition: 0.25s;
+}
+
+.success-btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}

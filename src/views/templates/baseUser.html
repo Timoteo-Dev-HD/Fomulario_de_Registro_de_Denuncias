@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Sistema de Denúncias{% endblock %}</title>
+
+    <!-- Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <!-- CSS Global Dark -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/baseUser.css') }}">
+
+    {% block styles %}{% endblock %}
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="header">
+        <nav class="navbar">
+
+            <div class="nav-left">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span class="nav-title">Sistema de Denúncias</span>
+            </div>
+
+        </nav>
+    </header>
+
+    <!-- CONTEÚDO -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>© {{ current_year | default(2025) }} - Sistema de Registro de Denúncias</p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

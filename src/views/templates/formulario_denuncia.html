@@ -1,0 +1,152 @@
+{% extends "baseUser.html" %}
+
+{% block title %}Formulário de Denúncia{% endblock %}
+
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/formulario.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="login-wrapper">
+    <div class="login-box">
+
+        <h1><i class="fa-solid fa-file-circle-exclamation"></i> Formulário de Denúncia</h1>
+
+        <div class="form-container">
+
+            <form action="{{ url_for('denuncias.form_denuncia') }}" method="POST">
+
+                <!-- ===== Dados do Denunciante ===== -->
+                <div class="section">
+                    <h2>Dados da Vítima</h2>
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" name="nome" placeholder="Nome completo (opcional)" required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" name="idade" placeholder="Idade (opcional)" required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="text" name="telefone" placeholder="Telefone / WhatsApp (opcional)" required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" name="email" placeholder="E-mail (opcional)">
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" name="setor" placeholder="Setor/Cargo (opcional)" required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-list"></i>
+                        <select name="genero" required>
+                            <option value="">Gênero...</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Ferminino">Ferminino</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+
+                </div>
+
+
+                <!-- ===== Dados do Ofensor ===== -->
+                <div class="section">
+                    <h2>Dados da Ofensor</h2>
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" name="nomeOfensor" placeholder="Nome do Ofensor..." required>
+                    </div>
+
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" name="setor" placeholder="Setor/Cargo (opcional)" required>
+                    </div>
+
+                    <div class="input-group" style="align-items: flex-start;">
+                        <i class="fa-solid fa-align-left" style="margin-top: 5px;"></i>
+                        <textarea name="descricaoOfensor" rows="4" placeholder="Descrição do Ofensor..." required></textarea>
+                    </div>
+
+                </div>
+
+
+
+
+                <!-- ===== Detalhes da Denúncia ===== -->
+                <div class="section">
+                    <h2>Detalhes da Denúncia</h2>
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-list"></i>
+                        <select name="tipo_situacao" required>
+                            <option value="">Tipo da situação...</option>
+                            <option>Violência Física</option>
+                            <option>Violência Psicológica</option>
+                            <option>Assédio</option>
+                            <option>Discriminação</option>
+                            <option>Outro</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <input type="text" name="frequencia" placeholder="Frequência..." required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-calendar"></i>
+                        <input type="date" name="data_ocorrencia">
+                    </div>
+
+                    <div class="input-group" style="align-items: flex-start;">
+                        <i class="fa-solid fa-align-left" style="margin-top: 5px;"></i>
+                        <textarea name="descricao" rows="4" placeholder="Descreva detalhadamente os fatos..." required></textarea>
+                    </div>
+                </div>
+
+                <!-- ===== Pessoas envolvidas ===== -->
+                <div class="section">
+                    <h2>Pessoas Envolvidas</h2>
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-users"></i>
+                        <select name="testemunhas">
+                            <option value="">Existem testemunhas?</option>
+                            <option>Sim</option>
+                            <option>Não</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fa-solid fa-id-card"></i>
+                        <input type="text" name="nome_testemunhas" placeholder="Nome das testemunhas">
+                    </div>
+                </div>
+
+                <!-- ===== Botão ===== -->
+                <div class="section" style="margin-top: 35px;">
+                    <button type="submit">
+                        <i  class="fa-solid fa-paper-plane"></i>
+                        Enviar Denúncia
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

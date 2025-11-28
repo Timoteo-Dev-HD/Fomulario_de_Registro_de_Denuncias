@@ -1,0 +1,24 @@
+{% extends "baseUser.html" %}
+
+{% block title %}Página Inicial{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/indexUser.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Página Inicial</h1>
+
+    <p>
+        Bem-vindo à área administrativa do sistema de denúncias.  
+        Aqui você pode registrar novas denúncias de forma sigilosa e segura.
+    </p>
+
+    <p>
+        Clique no botão abaixo para acessar o formulário completo de denúncias.
+    </p>
+
+    <a class="btn" href="{{ url_for('denuncias.form_denuncia') }}">📄 Registrar Denúncia</a>
+</div>
+{% endblock %}

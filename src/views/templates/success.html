@@ -1,0 +1,27 @@
+{% extends "baseUser.html" %}
+
+{% block title %}Denúncia Enviada{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/success.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="login-wrapper">
+    <div class="login-box" style="max-width: 600px; text-align: center;">
+
+        <h1><i class="fa-solid fa-circle-check" style="color: var(--primary);"></i> Denúncia Enviada</h1>
+
+        <p style="color: var(--text); margin-bottom: 20px; font-size: 16px; opacity: .85;">
+            Sua denúncia foi registrada em nosso sistema.<br>
+            Nossa equipe analisará o caso com total sigilo e responsabilidade.
+        </p>
+
+        <p style="color: var(--text); margin-bottom: 35px; font-size: 16px; opacity: .85;">
+            Obrigado por contribuir para um ambiente mais seguro.
+        </p>
+
+
+    </div>
+</div>
+{% endblock %}
