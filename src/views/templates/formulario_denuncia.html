@@ -46,16 +46,6 @@
                         <input type="text" name="setor" placeholder="Setor/Cargo (opcional)" required>
                     </div>
 
-                    <div class="input-group">
-                        <i class="fa-solid fa-list"></i>
-                        <select name="genero" required>
-                            <option value="">Gênero...</option>
-                            <option value="Masculino">Masculino</option>
-                            <option value="Ferminino">Ferminino</option>
-                            <option value="Outros">Outros</option>
-                        </select>
-                    </div>
-
                 </div>
 
 
@@ -71,7 +61,7 @@
 
                     <div class="input-group">
                         <i class="fa-solid fa-user"></i>
-                        <input type="text" name="setor" placeholder="Setor/Cargo (opcional)" required>
+                        <input type="text" name="setorOfensor" placeholder="Setor/Cargo (opcional)" required>
                     </div>
 
                     <div class="input-group" style="align-items: flex-start;">
@@ -92,11 +82,11 @@
                         <i class="fa-solid fa-list"></i>
                         <select name="tipo_situacao" required>
                             <option value="">Tipo da situação...</option>
-                            <option>Violência Física</option>
-                            <option>Violência Psicológica</option>
-                            <option>Assédio</option>
-                            <option>Discriminação</option>
-                            <option>Outro</option>
+                            <option value="Violência Física">Violência Física</option>
+                            <option value="Violência Psicológica">Violência Psicológica</option>
+                            <option value="Assédio">Assédio</option>
+                            <option value="Discriminação">Discriminação</option>
+                            <option value="Outro">Outro</option>
                         </select>
                     </div>
 
@@ -112,7 +102,7 @@
 
                     <div class="input-group" style="align-items: flex-start;">
                         <i class="fa-solid fa-align-left" style="margin-top: 5px;"></i>
-                        <textarea name="descricao" rows="4" placeholder="Descreva detalhadamente os fatos..." required></textarea>
+                        <textarea name="descricaoFatos" rows="4" placeholder="Descreva detalhadamente os fatos..." required></textarea>
                     </div>
                 </div>
 
@@ -124,8 +114,8 @@
                         <i class="fa-solid fa-users"></i>
                         <select name="testemunhas">
                             <option value="">Existem testemunhas?</option>
-                            <option>Sim</option>
-                            <option>Não</option>
+                            <option value="Sim">Sim</option>
+                            <option value="Não">Não</option>
                         </select>
                     </div>
 

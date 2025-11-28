@@ -33,7 +33,7 @@ app.register_blueprint(admin_bp)
 app.register_blueprint(denunia_bp)
 
 
-
+# Main
 
 @app.route("/", methods=["GET"])
 def index():

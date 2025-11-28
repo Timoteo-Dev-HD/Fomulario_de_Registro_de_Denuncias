@@ -10,17 +10,15 @@ class Vitima(db.Model):
     telefone = db.Column(db.String(10), nullable=False)
     email = db.Column(db.String(255), nullable=False)
     setor_cargo = db.Column(db.String(255), nullable=False)
-    genero = db.Column(db.String(25), nullable=False)
     
     denuncias = db.relationship("Denuncia", back_populates="vitima")
     
-    def __init__(self, nome, matricula, idade, telefone, email, setor_cargo, genero):
+    def __init__(self, nome, idade, telefone, email, setor_cargo):
         self.nome = nome
         self.idade = idade
         self.telefone = telefone
         self.email = email
         self.setor_cargo = setor_cargo
-        self.genero = genero
         
     def __repr__(self):
         return f"Vitima: {self.nome}"
