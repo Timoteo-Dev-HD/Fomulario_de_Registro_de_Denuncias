@@ -3,12 +3,14 @@ from flask import (
     render_template
 )
 
-
+from src.models.Vitima_model import Vitima
+from src.models.Ofesor_model import Ofesor
+from src.models.Denuncia_model import Denuncia
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
 
-@admin_bp.route("/", methods=["GET", "POST"])
+@admin_bp.route("/", methods=["GET"])
 def index_page():
     return render_template("index.html")
 
