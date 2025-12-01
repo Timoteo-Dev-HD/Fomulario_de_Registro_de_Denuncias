@@ -17,7 +17,7 @@ from src.utils.utils import validar_telefone, validar_email
 
 denunia_bp = Blueprint("denuncias", __name__, url_prefix="/denuncias") 
 
-@denunia_bp.route("/", methods=["GET", "POST"])
+@denunia_bp.route("/formulario", methods=["GET", "POST"])
 def form_denuncia():
     if request.method == "POST":
         data = request.form.to_dict()
