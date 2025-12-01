@@ -15,7 +15,7 @@ from src.settings.extensions import db
 
 from src.utils.utils import validar_telefone, validar_email
 
-denunia_bp = Blueprint("denuncias", __name__, url_prefix="/denuncias")
+denunia_bp = Blueprint("denuncias", __name__, url_prefix="/denuncias") 
 
 @denunia_bp.route("/", methods=["GET", "POST"])
 def form_denuncia():

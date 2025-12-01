@@ -7,7 +7,7 @@ class Vitima(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(150), nullable=False)
     idade = db.Column(db.Integer, nullable=False)
-    telefone = db.Column(db.String(10), nullable=False)
+    telefone = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(255), nullable=False)
     setor_cargo = db.Column(db.String(255), nullable=False)
     
