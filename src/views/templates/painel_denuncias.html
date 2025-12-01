@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Painel de Denúncias{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/painel.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+
+<div class="painel-container">
+
+    <div class="box-cards">
+
+        {% for d in denuncias %}
+
+        <div class="card-denuncia" onclick="toggleCard('{{ d.id }}')">
+
+            <!-- ==========================
+                 CABEÇALHO DO CARD
+            =========================== -->
+            <div class="card-basic">
+
+                <div>
+                    <h3>{{ d.categoria }}</h3>
+                    <p class="data">{{ d.data }}</p>
+                </div>
+
+                <div>
+                    <p class="vitima">
+                        <i class="fa-solid fa-user"></i>
+                        {{ d.vitima.nome }}
+                    </p>
+                </div>
+
+                <i class="fa-solid fa-chevron-down seta" id="seta-{{ d.id }}"></i>
+            </div>
+
+            <!-- ==========================
+                 DROPDOWN EXPANDIDO
+            =========================== -->
+            <div class="card-details" id="details-{{ d.id }}">
+
+                <!-- Informações Gerais -->
+                <div class="info-group">
+                    <h4><i class="fa-solid fa-thumbtack"></i> Informações Gerais</h4>
+                    <p><strong>Frequência:</strong> {{ d.frequencia }}</p>
+                    <p><strong>Testemunha:</strong> {{ d.testemunha }}</p>
+                    <p><strong>Nomes testemunhas:</strong> {{ d.nomes_testemunhas or "Nenhuma" }}</p>
+                </div>
+
+                <!-- Vítima -->
+                <div class="info-group">
+                    <h4><i class="fa-solid fa-person"></i> Vítima</h4>
+                    <p><strong>Nome:</strong> {{ d.vitima.nome }}</p>
+                    <p><strong>Idade:</strong> {{ d.vitima.idade }}</p>
+                    <p><strong>Telefone:</strong> {{ d.vitima.telefone }}</p>
+                    <p><strong>Email:</strong> {{ d.vitima.email }}</p>
+                    <p><strong>Cargo:</strong> {{ d.vitima.setor_cargo }}</p>
+                </div>
+
+                <!-- Ofensor -->
+                <div class="info-group">
+                    <h4><i class="fa-solid fa-user-tie"></i> Ofensor</h4>
+                    <p><strong>Nome:</strong> {{ d.ofensor.nome }}</p>
+                    <p><strong>Cargo:</strong> {{ d.ofensor.setor_cargo }}</p>
+                    <p><strong>Descrição:</strong> {{ d.ofensor.descricao }}</p>
+                </div>
+
+                <!-- Descrição do Caso -->
+                <div class="info-group">
+                    <h4><i class="fa-solid fa-file-lines"></i> Descrição do Caso</h4>
+                    <p>{{ d.descricao_do_fato }}</p>
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/painel.js') }}"></script>
+{% endblock %}

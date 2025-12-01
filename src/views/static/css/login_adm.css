@@ -9,16 +9,22 @@
     --primary-hover: #3c64db;
 }
 
+/* ===== GLOBAL ===== */
 body {
     background: var(--bg);
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--text);
 }
 
 /* ===== Centralização ===== */
 .login-wrapper {
-    min-height: 80vh;
+    min-height: 93vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 20px; /* Ajuda no mobile */
 }
 
 /* ===== Card ===== */
@@ -111,4 +117,61 @@ button:hover {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ===============================
+   🔥 RESPONSIVIDADE
+   =============================== */
+
+/* Celulares pequenos (320px - 399px) */
+@media (max-width: 400px) {
+
+    .login-box {
+        padding: 32px 24px;
+        border-radius: 14px;
+        max-width: 100%;
+    }
+
+    .login-box h1 {
+        font-size: 22px;
+        margin-bottom: 24px;
+    }
+
+    .input-group {
+        padding: 11px 12px;
+    }
+
+    .input-group i {
+        margin-right: 8px;
+        font-size: 14px;
+    }
+
+    .input-group input {
+        font-size: 14px;
+    }
+
+    button {
+        padding: 12px;
+        font-size: 14px;
+        border-radius: 8px;
+    }
+}
+
+/* Celulares médios (400px - 480px) */
+@media (max-width: 480px) {
+    .login-box {
+        padding: 36px 28px;
+    }
+}
+
+/* Tablets pequenos (600px - 768px) */
+@media (max-width: 768px) {
+    .login-wrapper {
+        padding: 30px;
+    }
+
+    .login-box {
+        max-width: 90%;
+    }
 }

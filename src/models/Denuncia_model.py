@@ -30,3 +30,32 @@ class Denuncia(db.Model):
         
     def __repr__(self):
         return f"Denuncia: {self.id}"
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "categoria": self.categoria,
+            "frequencia": self.frequencia,
+            "data": self.data.strftime("%d/%m/%Y") if self.data else None,
+            "testemunha": self.testemunha,
+            "nomes_testemunhas": self.nomes_testemunhas,
+            "descricao_do_fato": self.descricao_do_fato,
+
+            # --- Dados da vítima ---
+            "vitima": {
+                "id": self.vitima.id,
+                "nome": self.vitima.nome,
+                "idade": self.vitima.idade,
+                "telefone": self.vitima.telefone,
+                "email": self.vitima.email,
+                "setor_cargo": self.vitima.setor_cargo
+            } if self.vitima else None,
+
+            # --- Dados do ofensor ---
+            "ofensor": {
+                "id": self.ofesor.id,
+                "nome": self.ofesor.nome,
+                "setor_cargo": self.ofesor.setor_cargo,
+                "descricao": self.ofesor.descricao
+            } if self.ofesor else None,
+        }
