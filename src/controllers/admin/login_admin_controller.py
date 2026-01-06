@@ -58,7 +58,7 @@ def login_admin():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("login_admin"))
+    return redirect(url_for("admin.login_admin"))
 
 # ============== Painel ADM ====================
 
