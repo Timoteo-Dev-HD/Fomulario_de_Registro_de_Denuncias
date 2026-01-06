@@ -2,6 +2,9 @@ from flask import (
     Flask,
     render_template
 )
+from flask_login import (
+    LoginManager
+)
 
 from src.settings.config import Config
 from src.settings.extensions import db
@@ -14,6 +17,9 @@ app = Flask(
 app.config.from_object(Config)
 
 db.init_app(app=app)
+
+login_manager = LoginManager(app)
+login_manager.login_view = "login_admin"
 
 # Models para importa o metadata
 from src.models import Usuario_model
@@ -33,8 +39,12 @@ app.register_blueprint(admin_bp)
 app.register_blueprint(denunia_bp)
 
 
-# Main
+# Flask-Login
+@login_manager.user_loader
+def load_user(user_id):
+    return db.session.get(Usuario_model.Usuario, int(user_id))
 
+# Main
 @app.route("/", methods=["GET"])
 def index():
     return render_template("indexUser.html")

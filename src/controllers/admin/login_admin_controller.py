@@ -7,6 +7,12 @@ from flask import (
     url_for,
     redirect
 )
+from flask_login import (
+    login_user,
+    logout_user,
+    login_required,
+    current_user
+)
 
 from src.models.Vitima_model import Vitima
 from src.models.Ofesor_model import Ofesor
@@ -25,20 +31,23 @@ def index_page():
 @admin_bp.route("/login", methods=["GET", "POST"])
 def login_admin():
     if request.method == "POST":
-        data = request.form.to_dict()
+        #data = request.form.to_dict()
         
-        email_user = data["email"]
-        senha_user = data["password"]
-        
-        user_obj = db.session.query(Usuario).filter(Usuario.email == email_user and Usuario.senha == senha_user).first()
-        
+        email = request.form.get("email")
+        senha = request.form.get("password")
+
+        user_obj = (
+            db.session.query(Usuario)
+            .filter_by(email=email, senha=senha)
+            .first()
+        )
+
         if not user_obj:
-            flash("Usuário não existe no sistema...", "error")
+            flash("Usuário ou senha inválidos", "error")
             return render_template("login_adm.html")
 
-        session["nomeUser"] = user_obj.nome
-        session["emailUser"] = user_obj.email
-        session["senhaUser"] = user_obj.senha
+        # 🔑 FLASK-LOGIN
+        login_user(user_obj)
                 
         return redirect(url_for("admin.index_page"))
 
@@ -46,12 +55,15 @@ def login_admin():
     return render_template("login_adm.html")
 
 @admin_bp.route("/logout", methods=["GET"])
+@login_required
 def logout():
-    pass
+    logout_user()
+    return redirect(url_for("login_admin"))
 
 # ============== Painel ADM ====================
 
 @admin_bp.route('/painel', methods=['GET', 'POST'])
+@login_required
 def painel():
     denuncias = (
         db.session.query(Denuncia)
