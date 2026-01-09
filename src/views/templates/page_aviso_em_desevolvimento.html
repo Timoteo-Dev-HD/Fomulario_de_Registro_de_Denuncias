@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/em_desevolvimento.css') }}">
+{% endblock styles %}
+
+{% block content %}
+<div class="painel-container">
+    <div class="box-cards">
+
+        <div class="card-denuncia">
+            <div class="card-basic">
+                <div>
+                    <h3>🚧 Página em desenvolvimento</h3>
+                    <div class="data">Status do sistema</div>
+                </div>
+                <span class="vitima">Em progresso</span>
+            </div>
+
+            <div class="card-details open">
+                <div class="info-group">
+                    <h4>O que está acontecendo?</h4>
+                    <p>
+                        Esta página ainda está em
+                        <strong style="color:#4f7dff;">fase de desenvolvimento</strong>.
+                    </p>
+                </div>
+
+                <div class="info-group">
+                    <h4>O que esperar?</h4>
+                    <p>• Novas funcionalidades</p>
+                    <p>• Ajustes visuais</p>
+                    <p>• Integrações futuras</p>
+                </div>
+
+                <div class="info-group">
+                    <h4>Mensagem</h4>
+                    <p>
+                        Obrigado pela paciência.<br>
+                        Em breve esta área estará disponível.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

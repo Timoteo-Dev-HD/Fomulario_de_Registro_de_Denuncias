@@ -72,3 +72,11 @@ def painel():
     )
     denuncias_dict = [d.to_dict() for d in denuncias]
     return render_template("painel_denuncias.html", denuncias=denuncias_dict)
+
+
+
+
+@admin_bp.route("/dashboard", methods=["GET"])
+@login_required
+def dashboard():
+    return render_template("page_aviso_em_desevolvimento.html")
