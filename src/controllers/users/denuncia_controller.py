@@ -7,6 +7,8 @@ from flask import (
     flash
 )
 
+from datetime import datetime
+
 from src.models.Vitima_model import Vitima
 from src.models.Ofesor_model import Ofesor
 from src.models.Denuncia_model import Denuncia
@@ -41,6 +43,8 @@ def form_denuncia():
         db.session.add(obj_ofensor)
         db.session.commit()
         
+        
+        data_hoje = datetime.today()
         obj_denuncia = Denuncia(
             categoria=data.get("tipo_situacao"),
             frequencia=data.get("frequencia"),
@@ -49,7 +53,8 @@ def form_denuncia():
             nomes_testemunhas=data.get("nome_testemunhas"),
             descricao_do_fato=data.get("descricaoFatos"),
             vitima_id=obj_vitima.id,
-            ofesor_id=obj_ofensor.id
+            ofesor_id=obj_ofensor.id,
+            data_public=data_hoje
         )
 
         db.session.add(obj_denuncia)
