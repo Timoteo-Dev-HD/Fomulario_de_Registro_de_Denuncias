@@ -18,7 +18,17 @@ class Denuncia(db.Model):
     vitima = db.relationship("Vitima", back_populates="denuncias")
     ofesor = db.relationship("Ofesor", back_populates="denuncias")
     
-    def __init__(self, categoria, frequencia, data, testemunha, nomes_testemunhas, descricao_do_fato, vitima_id, ofesor_id):
+    data_public = db.Column(db.Date, nullable=False)
+    
+    def __init__(self, categoria,
+                 frequencia,
+                 data,
+                 testemunha,
+                 nomes_testemunhas,
+                 descricao_do_fato,
+                 vitima_id,
+                 ofesor_id,
+                 data_public):
         self.categoria = categoria
         self.frequencia = frequencia
         self.data = data
@@ -27,6 +37,7 @@ class Denuncia(db.Model):
         self.descricao_do_fato = descricao_do_fato
         self.vitima_id = vitima_id
         self.ofesor_id = ofesor_id
+        self.data_public = data_public
         
     def __repr__(self):
         return f"Denuncia: {self.id}"
