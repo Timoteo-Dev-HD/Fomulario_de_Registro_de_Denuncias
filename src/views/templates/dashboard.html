@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard
+{% endblock title %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock styles %}
+
+{% block content %}
+
+<main>
+
+    <div class="left">
+
+        <div class="top">
+            <div class="blocos"></div>
+            <div class="blocos"></div>
+            <div class="blocos"></div>
+        </div>
+
+        <div class="medium">
+
+        </div>
+
+        <div class="low">
+            <div class="blocos2"></div>
+            <div class="blocos2"></div>
+        </div>
+
+    </div>
+
+    <div class="right">
+        <div class="center">
+            <div class="blocos3"></div>
+            <div class="blocos3"></div>
+        </div>
+        
+    </div>
+
+</main>
+
+{% endblock content %}

@@ -1,0 +1,106 @@
+/* ===========================
+   CONTAINER MAIN
+=========================== */
+
+main {
+  display: flex;
+  width: 100%;
+  height: 120vh; /* ocupa a altura da tela */
+  gap: 16px;     /* espaço entre colunas (opcional) */
+  padding: 16px; /* margem interna */
+  box-sizing: border-box;
+}
+
+/* ===========================
+   DIV LEFT - ESQUERDO
+=========================== */
+
+.left {
+  flex: 0 0 70%;
+  background: rgba(27, 28, 31, 0.65);
+  border: 1px solid rgba(70, 70, 80, 0.4);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+
+.top {
+    width: 750px;
+    height: 150px;
+    margin: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.blocos {
+    width: 240px;
+    height: 150px;
+    background: rgba(17, 17, 20, 0.55);
+    border: 1px solid rgba(70, 70, 80, 0.4);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.35);
+    border-radius: 15px;
+}
+
+
+.medium {
+    width: 750px;
+    height: 300px;
+    margin: 10px;
+    background: rgba(17, 17, 20, 0.55);
+    border: 1px solid rgba(70, 70, 80, 0.4);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.35);
+    border-radius: 15px;
+}
+
+
+.low {
+    width: 750px;
+    height: 220px;
+    margin: 10px;
+    display: flex;
+    justify-content: space-around;
+
+}
+
+.blocos2 {
+    width: 370px;
+    height: 220px;
+    background: rgba(17, 17, 20, 0.55);
+    border: 1px solid rgba(70, 70, 80, 0.4);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.35);
+    border-radius: 15px;
+}
+
+
+/* ===========================
+   DIV RIGHT - DIREITA
+=========================== */
+
+.right {
+  flex: 0 0 30%;
+  background: rgba(27, 28, 31, 0.65);
+  border-radius: 8px;
+  border: 1px solid rgba(70, 70, 80, 0.4);
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.center {
+  width: 100%;
+  max-width: 320px;
+  min-height: 670px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 16px;
+}
+
+.blocos3 {
+  width: 100%;
+  min-height: 350px;
+  border-radius: 12px;
+  background: rgba(17, 17, 20, 0.55);
+  border: 1px solid rgba(70, 70, 80, 0.4);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.35);
+}
