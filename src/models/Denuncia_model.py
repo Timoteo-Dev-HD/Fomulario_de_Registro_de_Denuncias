@@ -18,7 +18,7 @@ class Denuncia(db.Model):
     vitima = db.relationship("Vitima", back_populates="denuncias")
     ofesor = db.relationship("Ofesor", back_populates="denuncias")
     
-    data_public = db.Column(db.Date, nullable=False)
+    data_public = db.Column(db.Date, nullable=True)
     
     def __init__(self, categoria,
                  frequencia,
