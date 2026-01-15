@@ -15,30 +15,64 @@ Dashboard
     <div class="left">
 
         <div class="top">
-            <div class="blocos"></div>
-            <div class="blocos"></div>
-            <div class="blocos"></div>
+            <div class="blocos">
+                <i class="fa-solid fa-file-lines icon"></i>
+                <h3>Total Denúncias</h3>
+                <p id="totalDenuncias">0</p>
+            </div>
+
+            <div class="blocos">
+                <i class="fa-solid fa-spinner icon andamento"></i>
+                <h3>Em Análise</h3>
+                <p id="emAndamento">0</p>
+            </div>
+
+            <div class="blocos">
+                <i class="fa-solid fa-triangle-exclamation icon alerta"></i>
+                <h3>Denúncias do Dia</h3>
+                <p id="foraSla">0</p>
+            </div>
         </div>
 
-        <div class="medium">
 
+        <div class="medium">
+            <canvas id="graficoMes"></canvas>
         </div>
 
         <div class="low">
-            <div class="blocos2"></div>
-            <div class="blocos2"></div>
+            <div class="blocos2 graficoDoughnut">
+                <canvas id="graficoDoughnut"></canvas>
+            </div>
+            <div class="blocos2 graficoStatus">
+                <h3>Status das Denúncias</h3>
+                <canvas id="graficoStatus"></canvas>
+            </div>
         </div>
 
     </div>
 
     <div class="right">
-        <div class="center">
-            <div class="blocos3"></div>
-            <div class="blocos3"></div>
+    <div class="center">
+        <div class="blocos3">
+
         </div>
+        <div class="blocos3">
+            <h3>Alertas</h3>
+            <ul id="alertas">
+                <li>3 denúncias fora do SLA</li>
+                <li>2 denúncias críticas sem responsável</li>
+                <li>5 casos parados há mais de 10 dias</li>
+            </ul>
+        </div>
+    </div>
         
     </div>
 
 </main>
 
 {% endblock content %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
