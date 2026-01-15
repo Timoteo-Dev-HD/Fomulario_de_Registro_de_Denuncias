@@ -14,7 +14,3 @@ from flask_login import (
 from src.controllers.admin.login_admin_controller import admin_bp
 
 
-# @admin_bp.route("/dashboard", methods=["GET"])
-# @login_required
-# def dashboard():
-#     return render_template("admin.page_aviso_em_desevolvimento.html")

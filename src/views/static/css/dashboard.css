@@ -5,7 +5,7 @@
 main {
   display: flex;
   width: 100%;
-  height: 120vh; /* ocupa a altura da tela */
+  height: 130vh; /* ocupa a altura da tela */
   gap: 16px;     /* espaço entre colunas (opcional) */
   padding: 16px; /* margem interna */
   box-sizing: border-box;
@@ -121,7 +121,73 @@ main {
 }
 
 
+/* ===========================
+   AJUSTE DE TAMANHO DOS BLOCOS DA DIREITA
+=========================== */
 
+
+.filtro-div {
+  flex: 3;
+  min-height: unset; /* permite crescer mais */
+}
+
+.exporta-div {
+  flex: 1;
+  min-height: unset; /* permite ficar menor */
+}
+
+
+/* ===========================
+   FILTROS
+=========================== */
+
+.filtro-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.filtro-item label {
+  font-size: 13px;
+  color: #cfcfcf;
+  margin-bottom: 4px;
+}
+
+.filtro-item input,
+.filtro-item select {
+  background: rgba(30, 30, 35, 0.8);
+  border: 1px solid rgba(70, 70, 80, 0.6);
+  border-radius: 6px;
+  padding: 6px;
+  margin-bottom: 6px;
+  color: #ffffff;
+}
+
+/* ===========================
+   BOTÕES
+=========================== */
+
+.btn-filtrar,
+.btn-exportar {
+  margin-top: 10px;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(54, 162, 235, 0.8);
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-exportar {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.btn-filtrar:hover,
+.btn-exportar:hover {
+  background: rgba(54, 162, 235, 1);
+}
 
 
 
@@ -230,7 +296,7 @@ canvas {
 .blocos .icon {
   position: absolute;
   top: 14px;
-  right: 10px;
+  right: 0px;
   left: 22px;
   font-size: 26px;
   color: rgba(255, 255, 255, 0.35);

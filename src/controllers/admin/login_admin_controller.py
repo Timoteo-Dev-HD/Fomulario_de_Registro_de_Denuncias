@@ -80,3 +80,8 @@ def painel():
 @login_required
 def dashboard():
     return render_template("page_aviso_em_desevolvimento.html")
+
+
+@admin_bp.route("/dash", methods=["GET"])
+def dashboard2():
+    return render_template("dashboard.html")
