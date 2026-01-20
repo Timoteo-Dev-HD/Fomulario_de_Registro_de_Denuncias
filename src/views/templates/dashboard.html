@@ -54,48 +54,48 @@ Dashboard
     <div class="right">
         <div class="center">
 
-        <div class="blocos3 filtro-div">
-            <h3>Filtros</h3>
+            <div class="blocos3 filtro-div">
+                <h3>Filtros</h3>
 
-            <div class="filtro-item">
-                <label for="periodo">Período</label>
-                <input type="date" id="dataInicio">
-                <input type="date" id="dataFim">
+                <div class="filtro-item">
+                    <label for="periodo">Período</label>
+                    <input type="date" id="dataInicio">
+                    <input type="date" id="dataFim">
+                </div>
+
+                <div class="filtro-item">
+                    <label for="status">Status</label>
+                    <select id="status">
+                        <option value="">Todos</option>
+                        <option value="recebida">Recebida</option>
+                        <option value="analise">Em análise</option>
+                        <option value="investigacao">Investigação</option>
+                        <option value="encerrada">Encerrada</option>
+                    </select>
+                </div>
+
+                <div class="filtro-item">
+                    <label for="severidade">Severidade</label>
+                    <select id="severidade">
+                        <option value="">Todas</option>
+                        <option value="baixa">Baixa</option>
+                        <option value="media">Média</option>
+                        <option value="alta">Alta</option>
+                        <option value="critica">Crítica</option>
+                    </select>
+                </div>
+
+                <div class="filtro-item">
+                    <label for="evidencias">Evidências</label>
+                    <select id="evidencias">
+                        <option value="">Todos</option>
+                        <option value="com">Com Evidências</option>
+                        <option value="sem">Sem Evidências</option>
+                    </select>
+                </div>
+
+                <button class="btn-filtrar">Aplicar filtros</button>
             </div>
-
-            <div class="filtro-item">
-                <label for="status">Status</label>
-                <select id="status">
-                    <option value="">Todos</option>
-                    <option value="recebida">Recebida</option>
-                    <option value="analise">Em análise</option>
-                    <option value="investigacao">Investigação</option>
-                    <option value="encerrada">Encerrada</option>
-                </select>
-            </div>
-
-            <div class="filtro-item">
-                <label for="severidade">Severidade</label>
-                <select id="severidade">
-                    <option value="">Todas</option>
-                    <option value="baixa">Baixa</option>
-                    <option value="media">Média</option>
-                    <option value="alta">Alta</option>
-                    <option value="critica">Crítica</option>
-                </select>
-            </div>
-
-            <div class="filtro-item">
-                <label for="evidencias">Evidências</label>
-                <select id="evidencias">
-                    <option value="">Todos</option>
-                    <option value="com">Com Evidências</option>
-                    <option value="sem">Sem Evidências</option>
-                </select>
-            </div>
-
-            <button class="btn-filtrar">Aplicar filtros</button>
-        </div>
 
 
             <div class="blocos3 exporta-div">
