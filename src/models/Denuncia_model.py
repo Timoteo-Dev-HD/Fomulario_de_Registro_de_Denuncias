@@ -19,6 +19,13 @@ class Denuncia(db.Model):
     ofesor = db.relationship("Ofesor", back_populates="denuncias")
     
     data_public = db.Column(db.Date, nullable=True)
+    # data_inicio = db.Column(db.Date, nullable=True)
+    # data_fim = db.Column(db.Date, nullable=True)
+    
+    status = db.Column(db.String(25), nullable=True)
+    severidade = db.Column(db.String(25), nullable=True)
+    evidencias = db.Column(db.String(50), nullable=True)
+    
     
     def __init__(self, categoria,
                  frequencia,
