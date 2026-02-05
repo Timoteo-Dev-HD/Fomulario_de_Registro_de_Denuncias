@@ -18,19 +18,19 @@ Dashboard
             <div class="blocos">
                 <i class="fa-solid fa-file-lines icon"></i>
                 <h3>Total Denúncias</h3>
-                <p id="totalDenuncias">0</p>
+                <p id="totalDenuncias">{{qtd_denuncias | default(0)}}</p>
             </div>
 
             <div class="blocos">
                 <i class="fa-solid fa-spinner icon andamento"></i>
                 <h3>Em Análise</h3>
-                <p id="emAndamento">0</p>
+                <p id="emAndamento">{{denuncias_em_analise | default(0)}}</p>
             </div>
 
             <div class="blocos">
                 <i class="fa-solid fa-triangle-exclamation icon alerta"></i>
                 <h3>Denúncias do Dia</h3>
-                <p id="foraSla">0</p>
+                <p id="foraSla">{{denuncias_do_dia | default(0)}}</p>
             </div>
         </div>
 
@@ -52,20 +52,20 @@ Dashboard
     </div>
 
     <div class="right">
-        <div class="center">
+        <form class="center" action="{{ url_for('admin.filter_dashboard') }}" method="POST">
 
             <div class="blocos3 filtro-div">
                 <h3>Filtros</h3>
 
                 <div class="filtro-item">
                     <label for="periodo">Período</label>
-                    <input type="date" id="dataInicio">
-                    <input type="date" id="dataFim">
+                    <input type="date" name="dataInicio" id="dataInicio">
+                    <input type="date" name="dataFim" id="dataFim">
                 </div>
 
                 <div class="filtro-item">
                     <label for="status">Status</label>
-                    <select id="status">
+                    <select name="status" id="status">
                         <option value="">Todos</option>
                         <option value="recebida">Recebida</option>
                         <option value="analise">Em análise</option>
@@ -76,7 +76,7 @@ Dashboard
 
                 <div class="filtro-item">
                     <label for="severidade">Severidade</label>
-                    <select id="severidade">
+                    <select name="severidade" id="severidade">
                         <option value="">Todas</option>
                         <option value="baixa">Baixa</option>
                         <option value="media">Média</option>
@@ -87,14 +87,14 @@ Dashboard
 
                 <div class="filtro-item">
                     <label for="evidencias">Evidências</label>
-                    <select id="evidencias">
+                    <select name="evidencias" id="evidencias">
                         <option value="">Todos</option>
                         <option value="com">Com Evidências</option>
                         <option value="sem">Sem Evidências</option>
                     </select>
                 </div>
 
-                <button class="btn-filtrar">Aplicar filtros</button>
+                <button type="submit" class="btn-filtrar">Aplicar filtros</button>
             </div>
 
 
@@ -111,7 +111,7 @@ Dashboard
                 </button>
             </div>
 
-        </div>
+        </form>
         
     </div>
 

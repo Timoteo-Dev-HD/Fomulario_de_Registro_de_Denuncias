@@ -14,6 +14,8 @@ from flask_login import (
     current_user
 )
 
+from datetime import date, datetime
+
 from src.models.Vitima_model import Vitima
 from src.models.Ofesor_model import Ofesor
 from src.models.Denuncia_model import Denuncia
@@ -79,9 +81,54 @@ def painel():
 @admin_bp.route("/dashboard", methods=["GET"])
 @login_required
 def dashboard():
-    return render_template("dashboard.html")
+    try:     
+        # Variaveis pegar todas as denuncias.
+        qtd_denuncias = len(Denuncia.query.all())
+        
+        # Variaveis que pegar as denuncias de hoje.
+        data_hoje = date.today()
+        denuncias_do_dia = len(db.session.query(Denuncia).filter(Denuncia.data_public == data_hoje).all())
+        
+        # Variavel que pegar casos que estão em anaálise.
+        denuncias_em_analise =len(db.session.query(Denuncia).filter(Denuncia.status == "Em análise").all())
+    
+        print(qtd_denuncias)
+        print(data_hoje)
+        print(denuncias_do_dia)
+        print(denuncias_em_analise)
+                
+        return render_template("dashboard.html",
+            qtd_denuncias=qtd_denuncias,
+            denuncias_em_analise=denuncias_em_analise,
+            denuncias_do_dia=denuncias_do_dia                       
+        )
+    except Exception as e:
+        return e
 
-
-# @admin_bp.route("/dash", methods=["GET"])
-# def dashboard2():
-#     return render_template("dashboard.html")
+@admin_bp.route("/filter", methods=["POST"])
+def filter_dashboard():
+    pass
+    # try:     
+    #     data = request.form.to_dict()
+    #     print(data)
+        
+    #     # Variaveis pegar todas as denuncias.
+    #     qtd_denuncias = len(Denuncia.query.all())
+        
+    #     # Variaveis que pegar as denuncias de hoje.
+    #     data_hoje = date.today()
+    #     denuncias_do_dia = db.session.query(Denuncia).filter(Denuncia.data_public == data_hoje).all()
+        
+    #     # Variavel que pegar casos que estão em anaálise.
+    #     denuncias_em_analise = db.session.query(Denuncia).filter(Denuncia.status == data["status"]).all()
+        
+        
+            
+    #     return render_template("dashboard.html",
+    #         qtd_denuncias=qtd_denuncias,
+    #         denuncias_em_analise=denuncias_em_analise,
+    #         denuncias_do_dia=denuncias_do_dia                       
+    #     )
+    # except Exception as e:
+    #     return e
+    

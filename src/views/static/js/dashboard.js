@@ -2,9 +2,9 @@
 // KPIs
 // ============================
 
-document.getElementById("totalDenuncias").innerText = 1125;
-document.getElementById("emAndamento").innerText = 48;
-document.getElementById("foraSla").innerText = 7;
+// document.getElementById("totalDenuncias").innerText = 1125;
+// document.getElementById("emAndamento").innerText = 48;
+// document.getElementById("foraSla").innerText = 7;
 
 // ============================
 // GRÁFICO MENSAL
@@ -35,13 +35,14 @@ new Chart(document.getElementById('graficoMes'), {
 new Chart(document.getElementById("graficoDoughnut"), {
   type: 'doughnut',
   data: {
-    labels: ['Mulher', 'Homem', 'Outros'],
+    labels: ['Baixo', 'Médio', 'Alta', 'Crítica'],
     datasets: [{
-      data: [100, 40, 10],
+      data: [150,80, 35, 13],
       backgroundColor: [
-        'rgb(255, 99, 132)',
-        'rgb(54, 162, 235)',
-        'rgb(255, 205, 86)'
+        'rgb(3, 188, 169)',
+        'rgb(255, 193, 7)',
+        'rgb(255, 152, 0)',
+        'rgb(244, 67, 54)'
       ]
     }]
   }
@@ -78,7 +79,13 @@ new Chart(document.getElementById("graficoStatus"), {
     datasets: [{
       label: 'Quantidade',
       data: [30, 18, 12, 65],
-      borderWidth: 1
+      borderWidth: 1,
+      backgroundColor: [
+        'rgb(0, 80, 200)',
+        'rgb(240, 180, 0)',
+        'rgb(255, 130, 0)',
+        'rgb(30, 160, 60)'
+      ]
     }]
   },
   options: {
