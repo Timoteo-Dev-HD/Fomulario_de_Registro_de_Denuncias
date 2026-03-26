@@ -61,8 +61,7 @@
             width: 100%;
             max-width: 300px;
             padding: 14px;
-            margin-top: 30px;
-            margin-left: 300px;
+            margin: 30px auto 0; /* centraliza corretamente */  
 
             background: var(--primary);
             color: white;
@@ -84,3 +83,36 @@
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        @media (max-width: 768px) {
+
+        header {
+            font-size: 18px;
+            padding: 16px;
+        }
+
+        .container {
+            margin: 20px;
+            padding: 24px 18px;
+            border-radius: 14px;
+        }
+
+        h1 {
+            font-size: 22px;
+        }
+
+        h2 {
+            font-size: 18px;
+        }
+
+        p {
+            font-size: 15px;
+        }
+
+        .btn {
+            width: 80%;
+            max-width: 100%;
+            font-size: 15px;
+            padding: 14px;
+        }
+    }
