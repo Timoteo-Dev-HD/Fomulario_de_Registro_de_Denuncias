@@ -26,6 +26,13 @@ class Denuncia(db.Model):
     severidade = db.Column(db.String(25), nullable=True)
     evidencias = db.Column(db.String(50), nullable=True)
     
+    # Fotos e Videos da denuncias:
+    anexos = db.relationship(
+        "DenunciaAnexos",
+        back_populates='denuncia',
+        cascade="all, delete-orphan"
+    )
+    
     
     def __init__(self, categoria,
                  frequencia,
