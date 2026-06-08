@@ -170,6 +170,13 @@ main {
    BOTÕES
 =========================== */
 
+.exporta-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 .btn-filtrar,
 .btn-exportar {
   margin-top: 10px;
@@ -183,8 +190,10 @@ main {
 }
 
 .btn-exportar {
-  width: 100%;
+  width: 80%;
   margin-bottom: 8px;
+
+  text-decoration: none;
 }
 
 .btn-filtrar:hover,

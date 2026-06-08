@@ -246,3 +246,49 @@ def exportar_csv():
         mimetype="text/csv",
         headers={"Content-Disposition": "attachment; filename=denuncias.csv"}
     )
+
+@admin_bp.route("/exportar/excel")
+@login_required
+def exportar_excel():
+    from openpyxl import Workbook
+    from openpyxl.styles import Font, Alignment
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Denúncias"
+
+    headers = ["ID", "Categoria", "Data", "Status", "Severidade",
+               "Vítima", "Ofensor", "Descrição"]
+    ws.append(headers)
+
+    for cell in ws[1]:
+        cell.font = Font(bold=True)
+        cell.alignment = Alignment(horizontal="center")
+
+    for d in Denuncia.query.order_by(Denuncia.data.desc()).all():
+        ws.append([
+            d.id, d.categoria, str(d.data) if d.data else "",
+            d.status, d.severidade,
+            d.vitima.nome if d.vitima else "",
+            d.ofesor.nome if d.ofesor else "",
+            d.descricao_do_fato
+        ])
+
+    ws.column_dimensions["A"].width = 5
+    ws.column_dimensions["B"].width = 18
+    ws.column_dimensions["C"].width = 12
+    ws.column_dimensions["D"].width = 12
+    ws.column_dimensions["E"].width = 10
+    ws.column_dimensions["F"].width = 22
+    ws.column_dimensions["G"].width = 22
+    ws.column_dimensions["H"].width = 40
+
+    output = io.BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    return Response(
+        output.read(),
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=denuncias.xlsx"}
+    )
