@@ -36,13 +36,13 @@ from src.models import Denuncia_anexos_model
 
 from src.controllers.admin.login_admin_controller import admin_bp
 from src.controllers.users.denuncia_controller import denuncia_bp
-
+from src.controllers.admin.exportar_controller import exportar_bp
 
 # Register Routes
 
 app.register_blueprint(admin_bp) 
 app.register_blueprint(denuncia_bp)
-
+app.register_blueprint(exportar_bp)
 
 # Flask-Login
 @login_manager.user_loader

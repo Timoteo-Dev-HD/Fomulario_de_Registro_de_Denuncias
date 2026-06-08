@@ -7,6 +7,7 @@ from flask import (
     url_for,
     redirect,
     jsonify,
+    Response,
     current_app
 )
 from flask_login import (
@@ -18,6 +19,9 @@ from flask_login import (
 
 from datetime import date, datetime
 from sqlalchemy import extract
+    
+import csv
+import io
 
 from src.models.Vitima_model import Vitima
 from src.models.Ofensor_model import Ofesor
@@ -220,3 +224,25 @@ def meses_denuncias():
         "Nov": meses[10] or 0,
         "Dez": meses[11] or 0     
     })
+    
+
+@admin_bp.route("/exportar/csv")
+@login_required
+def exportar_csv():
+    denuncias = Denuncia.query.order_by(Denuncia.data.desc()).all()
+    
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["ID", "Categoria", "Data", "Status", "Severidade",
+                     "Vítima", "Ofensor", "Descrição"])
+    for d in denuncias:
+        writer.writerow([
+            d.id, d.categoria, d.data, d.status, d.severidade,
+            d.vitima.nome, d.ofesor.nome, d.descricao_do_fato
+        ])
+    
+    return Response(
+        output.getvalue(),
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment; filename=denuncias.csv"}
+    )
