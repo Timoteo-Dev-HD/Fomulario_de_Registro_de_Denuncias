@@ -1,32 +1,77 @@
-// ============================
-// KPIs
-// ============================
+async function carregarDashboard() {
+  try {
+    const response = await fetch(`/admin/meses-denuncias`);
+    const dados = await response.json()    
 
-// document.getElementById("totalDenuncias").innerText = 1125;
-// document.getElementById("emAndamento").innerText = 48;
-// document.getElementById("foraSla").innerText = 7;
+    const dadosMes = [
+      dados.Jan, dados.Fev, dados.Mar, dados.Abr,
+      dados.Mai, dados.Jun, dados.Jul, dados.Ago,
+      dados.Set, dados.Out, dados.Nov, dados.Dez
+    ];
 
-// ============================
-// GRÁFICO MENSAL
-// ============================
+    // GRÁFICO MENSAL
+    new Chart(document.getElementById("graficoMes"), {
+        type: "bar",
+        data: {
+        labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
+                "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+        datasets: [{
+        label: "Total de Denúncias",
+        data: dadosMes,
+        borderWidth: 1
+              }]
+        },
+        options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+        }
+    });
 
-new Chart(document.getElementById('graficoMes'), {
-  type: 'bar',
-  data: {
-    labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
-    datasets: [{
-      label: 'Total de Denúncias',
-      data: [120, 90, 150, 80, 200, 170, 50, 40, 85, 10, 24, 97],
-      borderWidth: 1
-    }]
-  },
-  options: {
-    responsive: true,
-    scales: {
-      y: { beginAtZero: true }
-    }
+    const response1 = await fetch(`/admin/filter/quantidade_status`);
+    const dados1 = await response1.json()
+
+    const dadosStatus = [
+      dados1.pendente, dados1.em_analise,
+      dados1.suspenso, dados1.encerrada
+    ]
+
+    // ============================
+    // STATUS DAS DENÚNCIAS
+    // ============================
+
+    new Chart(document.getElementById("graficoStatus"), {
+      type: 'bar',
+      data: {
+        labels: ['Pendente', 'Em análise', 'Suspenso', 'Encerradas'],
+        datasets: [{
+          label: 'Quantidade',
+          data: dadosStatus,
+          borderWidth: 1,
+          backgroundColor: [
+            'rgb(240, 180, 0)',
+            'rgb(0, 80, 200)',
+            'rgb(255, 130, 0)',
+            'rgb(30, 160, 60)'
+          ]
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        scales: {
+          x: { beginAtZero: true }
+        }
+      }
+    });
+
+
+
+  } catch (error) {
+    console.error("Erro ao carregar dashboard:", error);
   }
-});
+
+}
+
+carregarDashboard();
 
 // ============================
 // DENÚNCIAS POR GÊNERO
@@ -48,50 +93,23 @@ new Chart(document.getElementById("graficoDoughnut"), {
   }
 });
 
-// ============================
-// DENÚNCIAS POR TIPO
-// ============================
+// // ============================
+// // DENÚNCIAS POR TIPO
+// // ============================
 
-new Chart(document.getElementById("graficoPizzaTipo"), {
-  type: 'pie',
-  data: {
-    labels: ['Assédio', 'Fraude', 'Discriminação', 'Outros'],
-    datasets: [{
-      data: [45, 25, 20, 10],
-      backgroundColor: [
-        'rgb(255, 99, 132)',
-        'rgb(54, 162, 235)',
-        'rgb(153, 102, 255)',
-        'rgb(201, 203, 207)'
-      ]
-    }]
-  }
-});
+// new Chart(document.getElementById("graficoPizzaTipo"), {
+//   type: 'pie',
+//   data: {
+//     labels: ['Assédio', 'Fraude', 'Discriminação', 'Outros'],
+//     datasets: [{
+//       data: [45, 25, 20, 10],
+//       backgroundColor: [
+//         'rgb(255, 99, 132)',
+//         'rgb(54, 162, 235)',
+//         'rgb(153, 102, 255)',
+//         'rgb(201, 203, 207)'
+//       ]
+//     }]
+//   }
+// });
 
-// ============================
-// STATUS DAS DENÚNCIAS
-// ============================
-
-new Chart(document.getElementById("graficoStatus"), {
-  type: 'bar',
-  data: {
-    labels: ['Recebidas', 'Em análise', 'Investigação', 'Encerradas'],
-    datasets: [{
-      label: 'Quantidade',
-      data: [30, 18, 12, 65],
-      borderWidth: 1,
-      backgroundColor: [
-        'rgb(0, 80, 200)',
-        'rgb(240, 180, 0)',
-        'rgb(255, 130, 0)',
-        'rgb(30, 160, 60)'
-      ]
-    }]
-  },
-  options: {
-    indexAxis: 'y',
-    scales: {
-      x: { beginAtZero: true }
-    }
-  }
-});

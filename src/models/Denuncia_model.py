@@ -1,4 +1,11 @@
+from enum import Enum
 from src.settings.extensions import db
+
+class StatusEnum(Enum):
+    PENDENTE = 'pendente'
+    EM_ANALISE = 'em_analise'
+    SUSPENSO = 'suspenso'
+    FINALIZADO = 'finalizado'
 
 class Denuncia(db.Model):
     
@@ -22,9 +29,15 @@ class Denuncia(db.Model):
     # data_inicio = db.Column(db.Date, nullable=True)
     # data_fim = db.Column(db.Date, nullable=True)
     
-    status = db.Column(db.String(25), nullable=True)
+    status = db.Column(db.String(25), default=StatusEnum.PENDENTE.value, nullable=True)
     severidade = db.Column(db.String(25), nullable=True)
     evidencias = db.Column(db.String(50), nullable=True)
+    
+    # Depoimentos
+    depoimento_vitima = db.Column(db.Text, nullable=True)
+    depoimento_acusado = db.Column(db.Text, nullable=True)
+    depoimento_testemunha = db.Column(db.Text, nullable=True)
+    depoimento_admin = db.Column(db.Text, nullable=True)
     
     # Fotos e Videos da denuncias:
     anexos = db.relationship(
@@ -53,6 +66,12 @@ class Denuncia(db.Model):
         self.ofesor_id = ofesor_id
         self.data_public = data_public
         
+    def insert_depoimento(self, depoimento_vitima, depoimento_acusado, depoimento_testemunha, depoimento_admin):
+        self.depoimento_vitima = depoimento_vitima
+        self.depoimento_acusado = depoimento_acusado
+        self.depoimento_testemunha = depoimento_testemunha
+        self.depoimento_admin = depoimento_admin
+        
     def __repr__(self):
         return f"Denuncia: {self.id}"
     
@@ -65,6 +84,13 @@ class Denuncia(db.Model):
             "testemunha": self.testemunha,
             "nomes_testemunhas": self.nomes_testemunhas,
             "descricao_do_fato": self.descricao_do_fato,
+            "status": self.status,
+            "severidade": self.severidade,
+            "evidencias": self.evidencias,
+            "depoimento_vit": self.depoimento_vitima,
+            "depoimento_acu": self.depoimento_acusado,
+            "depoimento_testemunha": self.depoimento_testemunha,
+            "depoimento_admin": self.depoimento_admin,
 
             # --- Dados da vítima ---
             "vitima": {
@@ -83,4 +109,13 @@ class Denuncia(db.Model):
                 "setor_cargo": self.ofesor.setor_cargo,
                 "descricao": self.ofesor.descricao
             } if self.ofesor else None,
+            
+            "anexos": [ 
+                {
+                    "id": anexo.id,
+                    "file_path": anexo.file_path,
+                    "file_type": anexo.file_type,
+                    "original_name": anexo.original_name
+                } for anexo in self.anexos
+            ]
         }

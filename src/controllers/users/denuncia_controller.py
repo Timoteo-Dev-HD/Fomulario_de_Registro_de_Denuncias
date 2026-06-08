@@ -1,25 +1,29 @@
+import os
+
 from flask import (
     Blueprint,
     render_template,
     request,
     redirect,
     url_for,
-    flash
+    flash,
+    current_app
 )
 
 from datetime import datetime
 
 from src.models.Vitima_model import Vitima
-from src.models.Ofesor_model import Ofesor
+from src.models.Ofensor_model import Ofesor
 from src.models.Denuncia_model import Denuncia
+from src.models.Denuncia_anexos_model import DenunciaAnexos
 
 from src.settings.extensions import db
 
-from src.utils.utils import validar_telefone, validar_email
+from src.utils.utils import allowed_file, get_file_type, generate_unique_filename
 
-denunia_bp = Blueprint("denuncias", __name__, url_prefix="/denuncias") 
+denuncia_bp = Blueprint("denuncias", __name__, url_prefix="/denuncias") 
 
-@denunia_bp.route("/formulario", methods=["GET", "POST"])
+@denuncia_bp.route("/formulario", methods=["GET", "POST"])
 def form_denuncia():
     if request.method == "POST":
         data = request.form.to_dict()
@@ -45,6 +49,7 @@ def form_denuncia():
         
         
         data_hoje = datetime.today()
+        
         obj_denuncia = Denuncia(
             categoria=data.get("tipo_situacao"),
             frequencia=data.get("frequencia"),
@@ -60,11 +65,44 @@ def form_denuncia():
         db.session.add(obj_denuncia)
         db.session.commit()
         
+        arquivos = request.files.getlist("arquivos")
+        
+        upload_folder = os.path.join(
+            current_app.static_folder,
+            "uploads",
+            "denuncias"
+        )
+        
+        os.makedirs(upload_folder, exist_ok=True)
+        
+        for arquivo in arquivos:
+            if arquivo and arquivo.filename != "":
+                if allowed_file(arquivo.filename):
+                    original_name = arquivo.filename
+                    filename = generate_unique_filename(arquivo.filename)
+                    
+                    file_path = os.path.join(upload_folder, filename)
+                    
+                    arquivo.save(file_path)
+                    
+                    relative_path = f"uploads/denuncias/{filename}"
+                    
+                    obj_anexos = DenunciaAnexos(
+                        obj_denuncia.id,
+                        file_path=relative_path,
+                        file_type=get_file_type(filename),
+                        original_name=original_name   
+                    )
+
+                    db.session.add(obj_anexos)
+        
+        db.session.commit()
+
         return render_template("success.html")
 
     return render_template("formulario_denuncia.html")
 
 
-@denunia_bp.route("/success", methods=["GET"])
+@denuncia_bp.route("/success", methods=["GET"])
 def page_success():
     return render_template("success.html")

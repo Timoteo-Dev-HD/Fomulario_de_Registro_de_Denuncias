@@ -5,7 +5,9 @@ from flask import (
     session,
     flash,
     url_for,
-    redirect
+    redirect,
+    jsonify,
+    current_app
 )
 from flask_login import (
     login_user,
@@ -15,10 +17,11 @@ from flask_login import (
 )
 
 from datetime import date, datetime
+from sqlalchemy import extract
 
 from src.models.Vitima_model import Vitima
-from src.models.Ofesor_model import Ofesor
-from src.models.Denuncia_model import Denuncia
+from src.models.Ofensor_model import Ofesor
+from src.models.Denuncia_model import Denuncia, StatusEnum
 from src.models.Usuario_model import Usuario
 
 from src.settings.extensions import db
@@ -90,45 +93,130 @@ def dashboard():
         denuncias_do_dia = len(db.session.query(Denuncia).filter(Denuncia.data_public == data_hoje).all())
         
         # Variavel que pegar casos que estão em anaálise.
-        denuncias_em_analise =len(db.session.query(Denuncia).filter(Denuncia.status == "Em análise").all())
+        denuncias_em_analise =len(db.session.query(Denuncia).filter(Denuncia.status == StatusEnum.EM_ANALISE.value).all())
     
-        print(qtd_denuncias)
-        print(data_hoje)
-        print(denuncias_do_dia)
-        print(denuncias_em_analise)
+        # print(qtd_denuncias)
+        # print(data_hoje)
+        # print(denuncias_do_dia)
+        # print(denuncias_em_analise)
                 
         return render_template("dashboard.html",
             qtd_denuncias=qtd_denuncias,
             denuncias_em_analise=denuncias_em_analise,
-            denuncias_do_dia=denuncias_do_dia                       
+            denuncias_do_dia=denuncias_do_dia,                      
         )
     except Exception as e:
-        return e
+        return jsonify({"error": str(e)})
 
 @admin_bp.route("/filter", methods=["POST"])
+@login_required
 def filter_dashboard():
-    pass
-    # try:     
-    #     data = request.form.to_dict()
-    #     print(data)
-        
-    #     # Variaveis pegar todas as denuncias.
-    #     qtd_denuncias = len(Denuncia.query.all())
-        
-    #     # Variaveis que pegar as denuncias de hoje.
-    #     data_hoje = date.today()
-    #     denuncias_do_dia = db.session.query(Denuncia).filter(Denuncia.data_public == data_hoje).all()
-        
-    #     # Variavel que pegar casos que estão em anaálise.
-    #     denuncias_em_analise = db.session.query(Denuncia).filter(Denuncia.status == data["status"]).all()
-        
-        
-            
-    #     return render_template("dashboard.html",
-    #         qtd_denuncias=qtd_denuncias,
-    #         denuncias_em_analise=denuncias_em_analise,
-    #         denuncias_do_dia=denuncias_do_dia                       
-    #     )
-    # except Exception as e:
-    #     return e
+    try:
+        if request.method == "POST":
+            data = request.form.to_dict()
+            # print(data)
+            return jsonify(data)
+    except Exception as e:
+        return jsonify({"error": str(e)})
     
+    
+@admin_bp.route("/filter/quantidade_status", methods=["GET"])
+@login_required
+def quatidade_status():
+    try:
+        qtd_recebida = db.session.query(Denuncia).filter(Denuncia.status == StatusEnum.PENDENTE.value).count()
+        qtd_em_analise = db.session.query(Denuncia).filter(Denuncia.status == StatusEnum.EM_ANALISE.value).count()
+        qtd_suspenso = db.session.query(Denuncia).filter(Denuncia.status == StatusEnum.SUSPENSO.value).count()
+        qtd_encerrada = db.session.query(Denuncia).filter(Denuncia.status == StatusEnum.FINALIZADO.value).count()
+
+        return jsonify({
+            "pendente": qtd_recebida,
+            "em_analise": qtd_em_analise,
+            "suspenso": qtd_suspenso,
+            "encerrada": qtd_encerrada
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+    
+# @admin_bp.route("/denuncia/<int:id>/finalizar", methods=["POST"])
+# @login_required
+# def finalizar_denuncia(id):
+#     print("CHEGOU NA ROTA FINALIZAR")
+#     print("ID RECEBIDO:", id)
+
+#     denuncia = Denuncia.query.get_or_404(id)
+
+#     print("STATUS ANTES:", denuncia.status)
+
+#     denuncia.status = "finalizado"
+
+#     db.session.commit()
+
+#     print("STATUS DEPOIS:", denuncia.status)
+
+#     return jsonify({
+#         "sucesso": True,
+#         "novo_status": denuncia.status
+#     }), 200
+
+
+@admin_bp.route("/denuncia/<int:id>/atualizar", methods=["POST"])
+@login_required
+def atualizar_denuncia(id):
+    denuncia = Denuncia.query.get_or_404(id)
+
+    data = request.get_json()
+
+    status = data.get("status")
+
+    status_permitidos = [item.value for item in StatusEnum]
+
+    if status not in status_permitidos:
+        return jsonify({
+            "sucesso": False,
+            "mensagem": "Status inválido."
+        }), 400
+
+    denuncia.status = status
+
+    denuncia.depoimento_vitima = data.get("depoimento_vitima")
+    denuncia.depoimento_acusado = data.get("depoimento_acusado")
+    denuncia.depoimento_testemunha = data.get("depoimento_testemunha")
+    denuncia.depoimento_admin = data.get("depoimento_admin")
+
+    db.session.commit()
+
+    return jsonify({
+        "sucesso": True,
+        "mensagem": "Denúncia atualizada com sucesso.",
+        "novo_status": denuncia.status
+    }), 200
+    
+    
+@admin_bp.route("/meses-denuncias")
+@login_required
+def meses_denuncias():
+    
+    meses = []
+    mes = None
+    for i in range(1, 13):
+        qtd = db.session.query(Denuncia).filter(
+            extract('month', Denuncia.data_public) == i
+        ).count()
+        meses.append(qtd)
+        
+    return jsonify({
+        "Jan": meses[0] or 0,
+        "Fev": meses[1] or 0,
+        "Mar": meses[2] or 0,
+        "Abr": meses[3] or 0,
+        "Mai": meses[4] or 0,
+        "Jun": meses[5] or 0,
+        "Jul": meses[6] or 0,
+        "Ago": meses[7] or 0,
+        "Set": meses[8] or 0,
+        "Out": meses[9] or 0,
+        "Nov": meses[10] or 0,
+        "Dez": meses[11] or 0     
+    })

@@ -11,72 +11,304 @@
 
 <div class="painel-container">
 
+    <div class="painel-header">
+        <div>
+            <h1>Painel de Denúncias</h1>
+            <p>Visualize, analise e finalize as denúncias recebidas.</p>
+        </div>
+    </div>
+
     <div class="box-cards">
 
         {% for d in denuncias %}
 
         <div class="card-denuncia" onclick="toggleCard('{{ d.id }}')">
 
-            <!-- ==========================
-                 CABEÇALHO DO CARD
-            =========================== -->
             <div class="card-basic">
 
-                <div>
+                <div class="card-title">
                     <h3>{{ d.categoria }}</h3>
-                    <p class="data">{{ d.data }}</p>
+
+                    <p class="data">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        {{ d.data }}
+                    </p>
                 </div>
 
-                <div>
+                <div class="card-vitima">
                     <p class="vitima">
                         <i class="fa-solid fa-user"></i>
                         {{ d.vitima.nome }}
                     </p>
+
+                    {% if d.status == "pendente" %}
+                        <span class="status-badge pendente">Pendente</span>
+
+                    {% elif d.status == "em_analise" %}
+                        <span class="status-badge em-analise">Em análise</span>
+
+                    {% elif d.status == "suspenso" %}
+                        <span class="status-badge suspenso">Suspenso</span>
+
+                    {% elif d.status == "finalizado" %}
+                        <span class="status-badge finalizado">Finalizado</span>
+
+                    {% else %}
+                        <span class="status-badge pendente">Pendente</span>
+                    {% endif %}
                 </div>
 
                 <i class="fa-solid fa-chevron-down seta" id="seta-{{ d.id }}"></i>
             </div>
 
-            <!-- ==========================
-                 DROPDOWN EXPANDIDO
-            =========================== -->
             <div class="card-details" id="details-{{ d.id }}">
 
-                <!-- Informações Gerais -->
                 <div class="info-group">
-                    <h4><i class="fa-solid fa-thumbtack"></i> Informações Gerais</h4>
-                    <p><strong>Frequência:</strong> {{ d.frequencia }}</p>
-                    <p><strong>Testemunha:</strong> {{ d.testemunha }}</p>
-                    <p><strong>Nomes testemunhas:</strong> {{ d.nomes_testemunhas or "Nenhuma" }}</p>
+                    <h4>
+                        <i class="fa-solid fa-thumbtack"></i>
+                        Informações Gerais
+                    </h4>
+
+                    <div class="info-grid">
+                        <p><strong>Categoria:</strong> {{ d.categoria }}</p>
+                        <p><strong>Frequência:</strong> {{ d.frequencia }}</p>
+                        <p><strong>Data da ocorrência:</strong> {{ d.data }}</p>
+                        <p><strong>Testemunha:</strong> {{ d.testemunha }}</p>
+                        <p><strong>Nomes testemunhas:</strong> {{ d.nomes_testemunhas or "Nenhuma" }}</p>
+                        <p><strong>Status:</strong> {{ d.status or "Pendente" }}</p>
+                        <p><strong>Severidade:</strong> {{ d.severidade or "Não definida" }}</p>
+                        <p><strong>Evidências:</strong> {{ d.evidencias or "Não definida" }}</p>
+                    </div>
                 </div>
 
-                <!-- Vítima -->
                 <div class="info-group">
-                    <h4><i class="fa-solid fa-person"></i> Vítima</h4>
-                    <p><strong>Nome:</strong> {{ d.vitima.nome }}</p>
-                    <p><strong>Idade:</strong> {{ d.vitima.idade }}</p>
-                    <p><strong>Telefone:</strong> {{ d.vitima.telefone }}</p>
-                    <p><strong>Email:</strong> {{ d.vitima.email }}</p>
-                    <p><strong>Cargo:</strong> {{ d.vitima.setor_cargo }}</p>
+                    <h4>
+                        <i class="fa-solid fa-person"></i>
+                        Vítima
+                    </h4>
+
+                    <div class="info-grid">
+                        <p><strong>Nome:</strong> {{ d.vitima.nome }}</p>
+                        <p><strong>Idade:</strong> {{ d.vitima.idade }}</p>
+                        <p><strong>Telefone:</strong> {{ d.vitima.telefone }}</p>
+                        <p><strong>Email:</strong> {{ d.vitima.email }}</p>
+                        <p><strong>Cargo/Setor:</strong> {{ d.vitima.setor_cargo }}</p>
+                    </div>
                 </div>
 
-                <!-- Ofensor -->
                 <div class="info-group">
-                    <h4><i class="fa-solid fa-user-tie"></i> Ofensor</h4>
-                    <p><strong>Nome:</strong> {{ d.ofensor.nome }}</p>
-                    <p><strong>Cargo:</strong> {{ d.ofensor.setor_cargo }}</p>
-                    <p><strong>Descrição:</strong> {{ d.ofensor.descricao }}</p>
+                    <h4>
+                        <i class="fa-solid fa-user-tie"></i>
+                        Ofensor
+                    </h4>
+
+                    <div class="info-grid">
+                        <p><strong>Nome:</strong> {{ d.ofensor.nome }}</p>
+                        <p><strong>Cargo/Setor:</strong> {{ d.ofensor.setor_cargo }}</p>
+                    </div>
+
+                    <p class="text-block">
+                        <strong>Descrição:</strong><br>
+                        {{ d.ofensor.descricao }}
+                    </p>
                 </div>
 
-                <!-- Descrição do Caso -->
                 <div class="info-group">
-                    <h4><i class="fa-solid fa-file-lines"></i> Descrição do Caso</h4>
-                    <p>{{ d.descricao_do_fato }}</p>
+                    <h4>
+                        <i class="fa-solid fa-file-lines"></i>
+                        Descrição do Caso
+                    </h4>
+
+                    <p class="text-block">
+                        {{ d.descricao_do_fato }}
+                    </p>
                 </div>
+
+                <div class="info-group">
+                    <h4>
+                        <i class="fa-solid fa-paperclip"></i>
+                        Anexos da Denúncia
+                    </h4>
+
+                    {% if d.anexos %}
+
+                        <div class="anexos-grid">
+
+                            {% for anexo in d.anexos %}
+
+                                <div class="anexo-card" onclick="event.stopPropagation()">
+
+                                    {% if anexo.file_type == "image" %}
+
+                                        <a 
+                                            href="{{ url_for('static', filename=anexo.file_path) }}" 
+                                            target="_blank"
+                                        >
+                                            <img 
+                                                src="{{ url_for('static', filename=anexo.file_path) }}"
+                                                alt="{{ anexo.original_name }}"
+                                            >
+                                        </a>
+
+                                    {% elif anexo.file_type == "video" %}
+
+                                        <video controls>
+                                            <source src="{{ url_for('static', filename=anexo.file_path) }}">
+                                            Seu navegador não suporta vídeo.
+                                        </video>
+
+                                    {% else %}
+
+                                        <div class="arquivo-generico">
+                                            <i class="fa-solid fa-file"></i>
+                                            <span>Arquivo anexado</span>
+                                        </div>
+
+                                    {% endif %}
+
+                                    <p title="{{ anexo.original_name }}">
+                                        {{ anexo.original_name }}
+                                    </p>
+
+                                    <a 
+                                        class="btn-ver-arquivo"
+                                        href="{{ url_for('static', filename=anexo.file_path) }}" 
+                                        target="_blank"
+                                    >
+                                        <i class="fa-solid fa-up-right-from-square"></i>
+                                        Abrir arquivo
+                                    </a>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% else %}
+
+                        <p class="sem-anexos">Essa denúncia não possui fotos ou vídeos.</p>
+
+                    {% endif %}
+                </div>
+                <form 
+                    class="form-analise"
+                     
+                    method="POST"
+                    onclick="event.stopPropagation()"
+                >
+
+
+                    <div class="info-group">
+                        <h4>
+                            <i class="fa-solid fa-list-check"></i>
+                            Status da Denúncia
+                        </h4>
+
+                        <select name="status" class="select-status">
+                            <option value="pendente" {% if d.status == "pendente" %}selected{% endif %}>
+                                Pendente
+                            </option>
+
+                            <option value="em_analise" {% if d.status == "em_analise" %}selected{% endif %}>
+                                Em análise
+                            </option>
+
+                            <option value="suspenso" {% if d.status == "suspenso" %}selected{% endif %}>
+                                Suspenso
+                            </option>
+
+                            <option value="finalizado" {% if d.status == "finalizado" %}selected{% endif %}>
+                                Finalizado
+                            </option>
+                        </select>
+                    </div>
+
+
+                    <!-- Área de Depoimentos  -->
+                    <div class="info-group">
+                        <h4>
+                            <i class="fa-solid fa-comment-medical"></i>
+                            Depoimento da Vítima
+                        </h4>
+
+                        <textarea 
+                            name="depoimento_vitima"
+                            class="input-group"
+                            id="depoimento_vitima"
+                            placeholder="Digite aqui o depoimento da vítima..."
+                        >{{ d.depoimento_vitima or "" }}</textarea>
+                    </div>
+
+                    <div class="info-group">
+                        <h4>
+                            <i class="fa-solid fa-comment-dots"></i>
+                            Depoimento do Acusado
+                        </h4>
+
+                        <textarea 
+                            name="depoimento_acusado"
+                            class="input-group"
+                            id="depoimento_acusado"
+                            placeholder="Digite aqui o depoimento do acusado..."
+                        >{{ d.depoimento_acusado or "" }}</textarea>
+                    </div>
+
+                    <div class="info-group">
+                        <h4>
+                            <i class="fa-solid fa-users"></i>
+                            Depoimento das Testemunhas
+                        </h4>
+
+                        <textarea 
+                            name="depoimento_testemunha"
+                            class="input-group"
+                            id="depoimento_testemunha"
+                            placeholder="Digite aqui o depoimento das testemunhas..."
+                        >{{ d.depoimento_testemunha or "" }}</textarea>
+                    </div>
+
+                    <div class="info-group">
+                        <h4>
+                            <i class="fa-solid fa-clipboard-check"></i>
+                            Observações da Administração
+                        </h4>
+
+                        <textarea 
+                            name="depoimento_admin"
+                            class="input-group"
+                            id="depoimento_admin"
+                            placeholder="Digite observações internas sobre a denúncia..."
+                        >{{ d.depoimento_admin or "" }}</textarea>
+                    </div>
+
+                    <div class="actions-denuncia">
+
+                        <button 
+                            type="button" 
+                            class="btn-finalizar" 
+                            data-id="{{ d.id }}" 
+                            onclick="salvarDenuncia(this)"
+                        >
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            Salvar alterações
+                        </button>
+
+                    </div>
+
+                </form>
 
             </div>
 
         </div>
+
+        {% else %}
+
+            <div class="empty-state">
+                <i class="fa-solid fa-folder-open"></i>
+                <h3>Nenhuma denúncia encontrada</h3>
+                <p>Quando uma denúncia for enviada, ela aparecerá aqui.</p>
+            </div>
 
         {% endfor %}
 

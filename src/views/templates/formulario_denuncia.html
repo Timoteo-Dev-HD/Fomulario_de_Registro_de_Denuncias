@@ -19,7 +19,10 @@
 
         <div class="form-container">
 
-            <form action="{{ url_for('denuncias.form_denuncia') }}" method="POST">
+            <form action="{{ url_for('denuncias.form_denuncia') }}" method="POST" enctype="multipart/form-data">
+
+                <!-- Proteção com CSRF_TOKEN -->
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"></input>
 
                 <!-- ===== Dados do Denunciante ===== -->
                 <div class="section">
@@ -27,7 +30,7 @@
 
                     <div class="input-group">
                         <i class="fa-solid fa-user"></i>
-                        <input type="text" name="nome" placeholder="Nome completo (opcional)" required>
+                        <input type="text" name="nome" placeholder="Nome completo (opcional)" required >
                     </div>
 
                     <div class="input-group">
@@ -101,7 +104,7 @@
 
                     <div class="input-group">
                         <i class="fa-solid fa-calendar"></i>
-                        <input type="date" name="data_ocorrencia">
+                        <input type="date" name="data_ocorrencia" required>
                     </div>
 
                     <div class="input-group" style="align-items: flex-start;">
@@ -126,6 +129,29 @@
                     <div class="input-group">
                         <i class="fa-solid fa-id-card"></i>
                         <input type="text" name="nome_testemunhas" placeholder="Nome das testemunhas">
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Anexos da Denúncia</h2>
+
+                    <div class="file-field">
+                        <label for="arquivos">
+                            <i class="fa-solid fa-file-image"></i>
+                            Enviar fotos ou vídeos
+                        </label>
+
+                        <input 
+                            type="file"
+                            name="arquivos"
+                            id="arquivos"
+                            multiple
+                            accept="image/*,video/*"
+                        >
+
+                        <small>
+                            Você pode selecionar uma ou mais fotos ou vídeos como prova da denúncia.
+                        </small>
                     </div>
                 </div>
 

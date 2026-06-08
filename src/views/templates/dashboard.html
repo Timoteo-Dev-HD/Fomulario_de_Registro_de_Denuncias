@@ -53,6 +53,9 @@ Dashboard
 
     <div class="right">
         <form class="center" action="{{ url_for('admin.filter_dashboard') }}" method="POST">
+            
+            <!-- Proteção CSRF_TOKEN -->
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"></input>
 
             <div class="blocos3 filtro-div">
                 <h3>Filtros</h3>
@@ -66,7 +69,7 @@ Dashboard
                 <div class="filtro-item">
                     <label for="status">Status</label>
                     <select name="status" id="status">
-                        <option value="">Todos</option>
+                        <option value="all">Todos</option>
                         <option value="recebida">Recebida</option>
                         <option value="analise">Em análise</option>
                         <option value="investigacao">Investigação</option>
@@ -77,7 +80,7 @@ Dashboard
                 <div class="filtro-item">
                     <label for="severidade">Severidade</label>
                     <select name="severidade" id="severidade">
-                        <option value="">Todas</option>
+                        <option value="all">Todas</option>
                         <option value="baixa">Baixa</option>
                         <option value="media">Média</option>
                         <option value="alta">Alta</option>
@@ -88,13 +91,13 @@ Dashboard
                 <div class="filtro-item">
                     <label for="evidencias">Evidências</label>
                     <select name="evidencias" id="evidencias">
-                        <option value="">Todos</option>
+                        <option value="all">Todos</option>
                         <option value="com">Com Evidências</option>
                         <option value="sem">Sem Evidências</option>
                     </select>
                 </div>
 
-                <button type="submit" class="btn-filtrar">Aplicar filtros</button>
+                <button type="submit" id="btn-filtrar" class="btn-filtrar">Aplicar filtros</button>
             </div>
 
 

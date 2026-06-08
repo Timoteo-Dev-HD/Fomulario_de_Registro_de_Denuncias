@@ -1,6 +1,5 @@
 from flask import (
-    render_template,
-    session,    
+    Blueprint,    
     request,
     jsonify,
     flash,
@@ -11,6 +10,5 @@ from flask_login import (
     login_required
 )
 
-from src.controllers.admin.login_admin_controller import admin_bp
 
-
+dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")

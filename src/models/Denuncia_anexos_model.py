@@ -19,3 +19,6 @@ class DenunciaAnexos(db.Model):
         self.file_path = file_path
         self.file_type = file_type
         self.original_name = original_name
+        
+    def __repr__(self):
+        return f"Anexo: {self.id} - {self.file_type}"
