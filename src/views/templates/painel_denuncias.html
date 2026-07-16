@@ -18,11 +18,113 @@
         </div>
     </div>
 
+    <div class="painel-stats">
+        <div class="stat-card">
+            <span>Total</span>
+            <strong>{{ resumo.total | default(0) }}</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Pendentes</span>
+            <strong>{{ resumo.pendentes | default(0) }}</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Em análise</span>
+            <strong>{{ resumo.em_analise | default(0) }}</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Finalizadas</span>
+            <strong>{{ resumo.finalizadas | default(0) }}</strong>
+        </div>
+    </div>
+
+    <form class="painel-filtros" method="GET" action="{{ url_for('admin.painel') }}">
+        <div class="filtro-campo filtro-busca">
+            <label for="q">Buscar</label>
+            <input
+                type="text"
+                id="q"
+                name="q"
+                value="{{ filtros.q }}"
+                placeholder="Vítima, ofensor, categoria ou descrição"
+            >
+        </div>
+
+        <div class="filtro-campo">
+            <label for="status">Status</label>
+            <select id="status" name="status">
+                {% for value, label in status_options %}
+                    <option value="{{ value }}" {% if filtros.status == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filtro-campo">
+            <label for="evidencias">Evidências</label>
+            <select id="evidencias" name="evidencias">
+                <option value="" {% if not filtros.evidencias %}selected{% endif %}>Todas</option>
+                <option value="com" {% if filtros.evidencias == "com" %}selected{% endif %}>Com anexos</option>
+                <option value="sem" {% if filtros.evidencias == "sem" %}selected{% endif %}>Sem anexos</option>
+            </select>
+        </div>
+
+        <div class="filtro-campo">
+            <label for="data_inicio">Data inicial</label>
+            <input type="date" id="data_inicio" name="data_inicio" value="{{ filtros.data_inicio }}">
+        </div>
+
+        <div class="filtro-campo">
+            <label for="data_fim">Data final</label>
+            <input type="date" id="data_fim" name="data_fim" value="{{ filtros.data_fim }}">
+        </div>
+
+        <div class="filtro-campo">
+            <label for="sort">Ordenar</label>
+            <select id="sort" name="sort">
+                {% for value, label in sort_options %}
+                    <option value="{{ value }}" {% if filtros.sort == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filtro-campo filtro-per-page">
+            <label for="per_page">Por página</label>
+            <select id="per_page" name="per_page">
+                {% for value in [5, 10, 20, 50] %}
+                    <option value="{{ value }}" {% if filtros.per_page == value %}selected{% endif %}>
+                        {{ value }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filtro-actions">
+            <button type="submit" class="btn-filtrar-painel">
+                <i class="fa-solid fa-filter"></i>
+                Filtrar
+            </button>
+
+            <a href="{{ url_for('admin.painel') }}" class="btn-limpar-filtros">
+                Limpar
+            </a>
+        </div>
+    </form>
+
+    <div class="painel-resultados-info">
+        Exibindo {{ denuncias | length }} de {{ total_filtrado | default(0) }} denúncia(s) encontrada(s).
+    </div>
+
     <div class="box-cards">
 
         {% for d in denuncias %}
 
-        <div class="card-denuncia" onclick="toggleCard('{{ d.id }}')">
+        <div class="card-denuncia {% if d.pendente_antiga %}pendente-antiga{% endif %}" onclick="toggleCard('{{ d.id }}')">
 
             <div class="card-basic">
 
@@ -33,6 +135,13 @@
                         <i class="fa-solid fa-calendar-days"></i>
                         {{ d.data }}
                     </p>
+
+                    {% if d.pendente_antiga %}
+                        <p class="prazo-alerta">
+                            <i class="fa-solid fa-clock"></i>
+                            Pendente há {{ d.dias_pendente }} dias
+                        </p>
+                    {% endif %}
                 </div>
 
                 <div class="card-vitima">
@@ -56,6 +165,11 @@
                     {% else %}
                         <span class="status-badge pendente">Pendente</span>
                     {% endif %}
+
+                    <span class="responsavel-badge">
+                        <i class="fa-solid fa-user-shield"></i>
+                        {{ d.responsavel or "Sem responsável" }}
+                    </span>
                 </div>
 
                 <i class="fa-solid fa-chevron-down seta" id="seta-{{ d.id }}"></i>
@@ -78,6 +192,8 @@
                         <p><strong>Status:</strong> {{ d.status or "Pendente" }}</p>
                         <p><strong>Severidade:</strong> {{ d.severidade or "Não definida" }}</p>
                         <p><strong>Evidências:</strong> {{ d.evidencias or "Não definida" }}</p>
+                        <p><strong>Responsável:</strong> {{ d.responsavel or "Não definido" }}</p>
+                        <p><strong>Anexos:</strong> {{ d.anexos | length }}</p>
                     </div>
                 </div>
 
@@ -141,11 +257,11 @@
                                     {% if anexo.file_type == "image" %}
 
                                         <a 
-                                            href="{{ url_for('static', filename=anexo.file_path) }}" 
+                                            href="{{ url_for('admin.visualizar_anexo', anexo_id=anexo.id) }}"
                                             target="_blank"
                                         >
                                             <img 
-                                                src="{{ url_for('static', filename=anexo.file_path) }}"
+                                                src="{{ url_for('admin.visualizar_anexo', anexo_id=anexo.id) }}"
                                                 alt="{{ anexo.original_name }}"
                                             >
                                         </a>
@@ -153,7 +269,7 @@
                                     {% elif anexo.file_type == "video" %}
 
                                         <video controls>
-                                            <source src="{{ url_for('static', filename=anexo.file_path) }}">
+                                            <source src="{{ url_for('admin.visualizar_anexo', anexo_id=anexo.id) }}">
                                             Seu navegador não suporta vídeo.
                                         </video>
 
@@ -172,7 +288,7 @@
 
                                     <a 
                                         class="btn-ver-arquivo"
-                                        href="{{ url_for('static', filename=anexo.file_path) }}" 
+                                        href="{{ url_for('admin.visualizar_anexo', anexo_id=anexo.id) }}"
                                         target="_blank"
                                     >
                                         <i class="fa-solid fa-up-right-from-square"></i>
@@ -222,6 +338,21 @@
                                 Finalizado
                             </option>
                         </select>
+                    </div>
+
+                    <div class="info-group">
+                        <h4>
+                            <i class="fa-solid fa-user-shield"></i>
+                            Responsável pelo Caso
+                        </h4>
+
+                        <input
+                            type="text"
+                            name="responsavel"
+                            class="input-text"
+                            value="{{ d.responsavel or '' }}"
+                            placeholder="Nome do responsável pela análise"
+                        >
                     </div>
 
 
@@ -282,7 +413,39 @@
                         >{{ d.depoimento_admin or "" }}</textarea>
                     </div>
 
+                    <div class="info-group">
+                        <h4>
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            Histórico de Alterações
+                        </h4>
+
+                        {% if d.historico %}
+                            <ul class="historico-list">
+                                {% for item in d.historico %}
+                                    <li>
+                                        <strong>{{ item.campo }}</strong>
+                                        <span>{{ item.criado_em }} por {{ item.usuario }}</span>
+                                        <p>
+                                            De "{{ item.valor_anterior or 'vazio' }}" para "{{ item.valor_novo or 'vazio' }}"
+                                        </p>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="sem-anexos">Nenhuma alteração registrada para essa denúncia.</p>
+                        {% endif %}
+                    </div>
+
                     <div class="actions-denuncia">
+
+                        <a
+                            href="{{ url_for('admin.exportar_denuncia_csv', id=d.id) }}"
+                            class="btn-exportar-denuncia"
+                            onclick="event.stopPropagation()"
+                        >
+                            <i class="fa-solid fa-file-csv"></i>
+                            Exportar CSV
+                        </a>
 
                         <button 
                             type="button" 
@@ -313,6 +476,41 @@
         {% endfor %}
 
     </div>
+
+    {% if pagination and pagination.pages > 1 %}
+        <nav class="pagination-container" aria-label="Paginação de denúncias">
+            <div class="pagination-info">
+                Página {{ pagination.page }} de {{ pagination.pages }}
+            </div>
+
+            <div class="pagination-links">
+                {% if previous_url %}
+                    <a class="pagination-link" href="{{ previous_url }}">Anterior</a>
+                {% else %}
+                    <span class="pagination-link disabled">Anterior</span>
+                {% endif %}
+
+                {% for link in page_links %}
+                    {% if link.page %}
+                        <a
+                            class="pagination-link {% if link.active %}active{% endif %}"
+                            href="{{ link.url }}"
+                        >
+                            {{ link.page }}
+                        </a>
+                    {% else %}
+                        <span class="pagination-ellipsis">...</span>
+                    {% endif %}
+                {% endfor %}
+
+                {% if next_url %}
+                    <a class="pagination-link" href="{{ next_url }}">Próxima</a>
+                {% else %}
+                    <span class="pagination-link disabled">Próxima</span>
+                {% endif %}
+            </div>
+        </nav>
+    {% endif %}
 
 </div>
 

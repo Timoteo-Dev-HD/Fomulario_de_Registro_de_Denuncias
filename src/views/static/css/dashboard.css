@@ -1,144 +1,177 @@
 /* ===========================
-   CONTAINER MAIN
+   CONTAINER DO DASHBOARD
 =========================== */
 
-main {
-  display: flex;
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+  gap: 16px;
   width: 100%;
-  height: 85vh; /* ocupa a altura da tela */
-  
-  gap: 16px;     /* espaço entre colunas (opcional) */
-  padding: 16px; /* margem interna */
-  box-sizing: border-box;
+  align-items: stretch;
 }
 
 /* ===========================
-   DIV LEFT - ESQUERDO
+   COLUNA ESQUERDA
 =========================== */
 
 .left {
-  flex: 0 0 70%;
+  min-width: 0;
   background: rgba(27, 28, 31, 0.65);
   border: 1px solid rgba(70, 70, 80, 0.4);
   border-radius: 8px;
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-
 /* ===========================
-   DIV TOP - BLOCO de Cima do LEFT
+   KPIs SUPERIORES
 =========================== */
 
 .top {
-    width: 750px;
-    height: 150px;
-    margin: 10px;
-    display: flex;
-    justify-content: space-between;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
 }
 
 .blocos {
-    width: 240px;
-    height: 150px;
-    background: rgba(17, 17, 20, 0.55);
-    border: 1px solid rgba(70, 70, 80, 0.4);
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.35);
-    border-radius: 15px;
+  min-height: 150px;
+  background: rgba(17, 17, 20, 0.55);
+  border: 1px solid rgba(70, 70, 80, 0.4);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.35);
+  border-radius: 15px;
+  position: relative;
+}
+
+.blocos h3 {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: #cfcfcf;
+}
+
+.blocos p {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 38px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.blocos .icon {
+  position: absolute;
+  top: 14px;
+  right: 0;
+  left: 22px;
+  font-size: 26px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.blocos .andamento {
+  color: rgba(255, 193, 7, 0.7);
+}
+
+.blocos .alerta {
+  color: rgba(220, 53, 69, 0.8);
 }
 
 /* ===========================
-   DIV MEDIUM - BLOCO DO MEIO COM O GRÁFICOS.
+   GRÁFICO PRINCIPAL
 =========================== */
 
 .medium {
-    width: 750px;
-    height: 300px;
-    margin: 10px;
-    background: rgba(17, 17, 20, 0.55);
-    border: 1px solid rgba(70, 70, 80, 0.4);
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.35);
-    border-radius: 15px;
-    display: flex;
-    justify-content: center;
+  width: 100%;
+  min-height: 300px;
+  background: rgba(17, 17, 20, 0.55);
+  border: 1px solid rgba(70, 70, 80, 0.4);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.35);
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
 }
 
 #graficoMes {
-  width: 600px;
-  height: 300px;
+  width: 100%;
+  max-width: 100%;
+  max-height: 300px;
 }
 
-.low {
-    width: 750px;
-    height: 220px;
-    margin: 10px;
-    display: flex;
-    justify-content: space-around;
+/* ===========================
+   GRÁFICOS INFERIORES
+=========================== */
 
+.low {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
 }
 
 .blocos2 {
-    width: 370px;
-    height: 220px;
-    background: rgba(17, 17, 20, 0.55);
-    border: 1px solid rgba(70, 70, 80, 0.4);
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.35);
-    border-radius: 15px;
-    display: flex;
-    justify-content: center;
+  min-width: 0;
+  min-height: 230px;
+  background: rgba(17, 17, 20, 0.55);
+  border: 1px solid rgba(70, 70, 80, 0.4);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.35);
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 10px;
 }
 
+.graficoDoughnut canvas,
+.graficoStatus canvas {
+  width: 100%;
+  max-height: 180px;
+}
 
 /* ===========================
-   DIV RIGHT - DIREITA
+   COLUNA DIREITA
 =========================== */
 
 .right {
-  flex: 0 0 30%;
+  min-width: 0;
   background: rgba(27, 28, 31, 0.65);
   border-radius: 8px;
   border: 1px solid rgba(70, 70, 80, 0.4);
   padding: 16px;
-  display: flex;
-  justify-content: center;
 }
 
 .center {
   width: 100%;
-  max-width: 320px;
-  min-height: 670px;
-  max-height: 700px;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
   gap: 16px;
 }
 
 .blocos3 {
   width: 100%;
-  min-height: 350px;
-  max-height: 500px;
   border-radius: 12px;
   background: rgba(17, 17, 20, 0.55);
   border: 1px solid rgba(70, 70, 80, 0.4);
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.35);
+  padding: 14px;
 }
 
-
-/* ===========================
-   AJUSTE DE TAMANHO DOS BLOCOS DA DIREITA
-=========================== */
-
-
 .filtro-div {
-  flex: 3;
-  min-height: unset; /* permite crescer mais */
+  flex: 1;
 }
 
 .exporta-div {
-  flex: 1;
-  min-height: unset; /* permite ficar menor */
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
-
 
 /* ===========================
    FILTROS
@@ -170,13 +203,6 @@ main {
    BOTÕES
 =========================== */
 
-.exporta-div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
 .btn-filtrar,
 .btn-exportar {
   margin-top: 10px;
@@ -192,8 +218,8 @@ main {
 .btn-exportar {
   width: 80%;
   margin-bottom: 8px;
-
   text-decoration: none;
+  text-align: center;
 }
 
 .btn-filtrar:hover,
@@ -201,41 +227,14 @@ main {
   background: rgba(54, 162, 235, 1);
 }
 
-
-
-
-
-
-
-
-
 /* ===========================
-   TEXTO DOS KPIs (TOP)
-=========================== */
-
-.blocos h3 {
-  margin-top: 18px;
-  text-align: center;
-  font-size: 16px;
-  font-weight: 500;
-  color: #cfcfcf;
-}
-
-.blocos p {
-  margin-top: 18px;
-  text-align: center;
-  font-size: 38px;
-  font-weight: bold;
-  color: #ffffff;
-}
-
-/* ===========================
-   TÍTULOS DOS GRÁFICOS
+   TÍTULOS DOS BLOCOS
 =========================== */
 
 .blocos2 h3,
 .blocos3 h3 {
   margin-top: 12px;
+  margin-bottom: 12px;
   text-align: center;
   font-size: 15px;
   font-weight: 500;
@@ -243,38 +242,7 @@ main {
 }
 
 /* ===========================
-   AJUSTES DOS BLOCOS DE GRÁFICO
-=========================== */
-
-.blocos2 {
-  flex-direction: column;
-  align-items: center;
-  padding: 10px;
-}
-
-.blocos3 {
-  padding: 14px;
-}
-
-/* ===========================
-   LISTA DE ALERTAS
-=========================== */
-
-#alertas {
-  margin-top: 12px;
-  padding-left: 18px;
-  list-style: disc;
-}
-
-#alertas li {
-  font-size: 14px;
-  color: #e0e0e0;
-  margin-bottom: 10px;
-  line-height: 1.4;
-}
-
-/* ===========================
-   CANVAS – MELHOR RESPONSIVIDADE
+   CANVAS
 =========================== */
 
 canvas {
@@ -283,7 +251,7 @@ canvas {
 }
 
 /* ===========================
-   EFEITO HOVER (SUTIL)
+   EFEITO HOVER
 =========================== */
 
 .blocos:hover,
@@ -293,32 +261,51 @@ canvas {
   transition: border-color 0.2s ease;
 }
 
-
-
-
-
 /* ===========================
-   ÍCONES DOS KPIs
+   RESPONSIVIDADE
 =========================== */
 
-.blocos {
-  position: relative;
+@media (max-width: 1100px) {
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .center {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
+    align-items: start;
+  }
 }
 
-.blocos .icon {
-  position: absolute;
-  top: 14px;
-  right: 0px;
-  left: 22px;
-  font-size: 26px;
-  color: rgba(255, 255, 255, 0.35);
+@media (max-width: 760px) {
+  .top,
+  .low,
+  .center {
+    grid-template-columns: 1fr;
+  }
+
+  .left,
+  .right {
+    padding: 12px;
+  }
+
+  .medium {
+    min-height: 260px;
+  }
+
+  .blocos2 {
+    min-height: 220px;
+  }
 }
 
-/* Cores semânticas (opcional) */
-.blocos .andamento {
-  color: rgba(255, 193, 7, 0.7);
-}
+@media (max-width: 480px) {
+  .dashboard-layout,
+  .left,
+  .center {
+    gap: 12px;
+  }
 
-.blocos .alerta {
-  color: rgba(220, 53, 69, 0.8);
+  .blocos p {
+    font-size: 34px;
+  }
 }

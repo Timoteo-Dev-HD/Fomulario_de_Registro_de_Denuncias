@@ -45,13 +45,26 @@ def validar_telefone(telefone: str, ddd_default="11"):
 
 ## Funções utils para uploads de vídeos e img:
 
-def allowed_file(filename):
+def allowed_file(filename, allowed_extensions=None):
     if "." not in filename:
         return False
 
     extension = filename.rsplit(".", 1)[1].lower()
 
-    return extension in os.getenv('ALLOWED_EXTENSIONS')
+    if allowed_extensions is None:
+        allowed_extensions = os.getenv(
+            "ALLOWED_EXTENSIONS",
+            "png,jpg,jpeg,webp,mp4,mov,avi,mkv"
+        )
+
+    if isinstance(allowed_extensions, str):
+        allowed_extensions = {
+            item.strip().lower().lstrip(".")
+            for item in allowed_extensions.split(",")
+            if item.strip()
+        }
+
+    return extension in allowed_extensions
 
 def get_file_type(filename):
     extension = filename.rsplit(".", 1)[1].lower()

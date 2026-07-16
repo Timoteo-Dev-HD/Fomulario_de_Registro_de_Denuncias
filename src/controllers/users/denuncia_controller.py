@@ -67,17 +67,13 @@ def form_denuncia():
         
         arquivos = request.files.getlist("arquivos")
         
-        upload_folder = os.path.join(
-            current_app.static_folder,
-            "uploads",
-            "denuncias"
-        )
+        upload_folder = current_app.config["UPLOAD_FOLDER"]
         
         os.makedirs(upload_folder, exist_ok=True)
         
         for arquivo in arquivos:
             if arquivo and arquivo.filename != "":
-                if allowed_file(arquivo.filename):
+                if allowed_file(arquivo.filename, current_app.config["ALLOWED_EXTENSIONS"]):
                     original_name = arquivo.filename
                     filename = generate_unique_filename(arquivo.filename)
                     
@@ -85,11 +81,9 @@ def form_denuncia():
                     
                     arquivo.save(file_path)
                     
-                    relative_path = f"uploads/denuncias/{filename}"
-                    
                     obj_anexos = DenunciaAnexos(
                         obj_denuncia.id,
-                        file_path=relative_path,
+                        file_path=filename,
                         file_type=get_file_type(filename),
                         original_name=original_name   
                     )

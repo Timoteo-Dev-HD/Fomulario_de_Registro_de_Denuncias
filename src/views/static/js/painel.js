@@ -15,6 +15,15 @@ function salvarDenuncia(btn) {
     const form = btn.closest(".form-analise");
 
     const status = form.querySelector("[name='status']").value;
+    const responsavel = form.querySelector("[name='responsavel']").value;
+
+    if (status === "finalizado") {
+        const confirmar = confirm("Confirma a finalização desta denúncia?");
+
+        if (!confirmar) {
+            return;
+        }
+    }
 
     const depoimentoVitima = form.querySelector("[name='depoimento_vitima']").value;
     const depoimentoAcusado = form.querySelector("[name='depoimento_acusado']").value;
@@ -23,6 +32,7 @@ function salvarDenuncia(btn) {
 
     const dados = {
         status: status,
+        responsavel: responsavel,
         depoimento_vitima: depoimentoVitima,
         depoimento_acusado: depoimentoAcusado,
         depoimento_testemunha: depoimentoTestemunha,
@@ -42,14 +52,33 @@ function salvarDenuncia(btn) {
         console.log(data);
 
         if (data.sucesso) {
-            alert("Denúncia atualizada com sucesso!");
-            window.location.reload();
+            mostrarToast("Denúncia atualizada com sucesso!", "success");
+            setTimeout(() => window.location.reload(), 900);
         } else {
-            alert(data.mensagem || "Erro ao atualizar denúncia.");
+            mostrarToast(data.mensagem || "Erro ao atualizar denúncia.", "error");
         }
     })
     .catch(error => {
         console.error("Erro:", error);
-        alert("Erro ao atualizar denúncia. Veja o console.");
+        mostrarToast("Erro ao atualizar denúncia. Veja o console.", "error");
     });
+}
+
+function mostrarToast(mensagem, tipo = "success") {
+    let container = document.querySelector(".toast-container");
+
+    if (!container) {
+        container = document.createElement("div");
+        container.className = "toast-container";
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement("div");
+    toast.className = `toast ${tipo}`;
+    toast.textContent = mensagem;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 3500);
 }

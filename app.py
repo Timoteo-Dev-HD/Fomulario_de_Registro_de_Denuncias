@@ -31,6 +31,7 @@ from src.models import Vitima_model
 from src.models import Ofensor_model
 from src.models import Denuncia_model
 from src.models import Denuncia_anexos_model
+from src.models import Denuncia_historico_model
 
 # Import Controllers
 
@@ -56,4 +57,5 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    debug = os.getenv("FLASK_DEBUG", "").lower() in {"1", "true", "yes", "on"}
+    app.run(debug=debug)

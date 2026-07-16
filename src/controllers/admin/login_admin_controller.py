@@ -8,7 +8,9 @@ from flask import (
     redirect,
     jsonify,
     Response,
-    current_app
+    current_app,
+    send_from_directory,
+    abort
 )
 from flask_login import (
     login_user,
@@ -18,19 +20,183 @@ from flask_login import (
 )
 
 from datetime import date, datetime
-from sqlalchemy import extract
+from sqlalchemy import extract, or_
     
 import csv
 import io
+import os
 
 from src.models.Vitima_model import Vitima
 from src.models.Ofensor_model import Ofesor
 from src.models.Denuncia_model import Denuncia, StatusEnum
+from src.models.Denuncia_anexos_model import DenunciaAnexos
+from src.models.Denuncia_historico_model import DenunciaHistorico
 from src.models.Usuario_model import Usuario
 
 from src.settings.extensions import db
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
+
+PAINEL_DEFAULT_PER_PAGE = 10
+PAINEL_MAX_PER_PAGE = 50
+PRAZO_PENDENTE_DIAS = 7
+
+STATUS_OPTIONS = [
+    ("", "Todos"),
+    (StatusEnum.PENDENTE.value, "Pendente"),
+    (StatusEnum.EM_ANALISE.value, "Em análise"),
+    (StatusEnum.SUSPENSO.value, "Suspenso"),
+    (StatusEnum.FINALIZADO.value, "Finalizado"),
+]
+
+SORT_OPTIONS = [
+    ("recentes", "Mais recentes"),
+    ("antigas", "Mais antigas"),
+    ("status", "Status"),
+    ("categoria", "Categoria"),
+]
+
+
+def _parse_date(value):
+    if not value:
+        return None
+
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+
+def _safe_export_value(value):
+    text = "" if value is None else str(value)
+
+    if text.startswith(("=", "+", "-", "@")):
+        return f"'{text}"
+
+    return text
+
+
+def _get_painel_filters():
+    per_page = request.args.get("per_page", PAINEL_DEFAULT_PER_PAGE, type=int)
+    per_page = min(max(per_page, 5), PAINEL_MAX_PER_PAGE)
+
+    return {
+        "q": (request.args.get("q") or "").strip(),
+        "status": request.args.get("status") or "",
+        "evidencias": request.args.get("evidencias") or "",
+        "data_inicio": request.args.get("data_inicio") or "",
+        "data_fim": request.args.get("data_fim") or "",
+        "sort": request.args.get("sort") or "recentes",
+        "per_page": per_page,
+    }
+
+
+def _apply_painel_filters(query, filtros):
+    search = filtros["q"]
+    status = filtros["status"]
+    evidencias = filtros["evidencias"]
+    data_inicio = _parse_date(filtros["data_inicio"])
+    data_fim = _parse_date(filtros["data_fim"])
+
+    if search:
+        term = f"%{search}%"
+        query = query.filter(or_(
+            Denuncia.categoria.ilike(term),
+            Denuncia.descricao_do_fato.ilike(term),
+            Vitima.nome.ilike(term),
+            Ofesor.nome.ilike(term),
+        ))
+
+    if status in [item.value for item in StatusEnum]:
+        query = query.filter(Denuncia.status == status)
+
+    if evidencias == "com":
+        query = query.filter(Denuncia.anexos.any())
+    elif evidencias == "sem":
+        query = query.filter(~Denuncia.anexos.any())
+
+    if data_inicio:
+        query = query.filter(Denuncia.data >= data_inicio)
+
+    if data_fim:
+        query = query.filter(Denuncia.data <= data_fim)
+
+    return query
+
+
+def _apply_painel_sort(query, sort):
+    if sort == "antigas":
+        return query.order_by(Denuncia.data_public.asc(), Denuncia.id.asc())
+
+    if sort == "status":
+        return query.order_by(Denuncia.status.asc(), Denuncia.data_public.desc(), Denuncia.id.desc())
+
+    if sort == "categoria":
+        return query.order_by(Denuncia.categoria.asc(), Denuncia.data_public.desc(), Denuncia.id.desc())
+
+    return query.order_by(Denuncia.data_public.desc(), Denuncia.id.desc())
+
+
+def _build_page_url(page, query_params):
+    params = query_params.copy()
+    params["page"] = page
+    return url_for("admin.painel", **params)
+
+
+def _build_page_links(pagination, query_params):
+    links = []
+
+    for page in pagination.iter_pages(left_edge=1, left_current=2, right_current=2, right_edge=1):
+        if page is None:
+            links.append({"page": None, "url": None, "active": False})
+        else:
+            links.append({
+                "page": page,
+                "url": _build_page_url(page, query_params),
+                "active": page == pagination.page,
+            })
+
+    return links
+
+
+def _painel_query_params(filtros):
+    query_params = {}
+
+    for key, value in filtros.items():
+        if key == "per_page" and value == PAINEL_DEFAULT_PER_PAGE:
+            continue
+
+        if value not in (None, ""):
+            query_params[key] = value
+
+    return query_params
+
+
+def _painel_summary():
+    return {
+        "total": Denuncia.query.count(),
+        "pendentes": Denuncia.query.filter(Denuncia.status == StatusEnum.PENDENTE.value).count(),
+        "em_analise": Denuncia.query.filter(Denuncia.status == StatusEnum.EM_ANALISE.value).count(),
+        "finalizadas": Denuncia.query.filter(Denuncia.status == StatusEnum.FINALIZADO.value).count(),
+    }
+
+
+def _record_change(denuncia, campo, old_value, new_value):
+    old_text = "" if old_value is None else str(old_value)
+    new_text = "" if new_value is None else str(new_value)
+
+    if old_text == new_text:
+        return
+
+    user_id = int(current_user.get_id()) if current_user and current_user.get_id() else None
+
+    db.session.add(DenunciaHistorico(
+        denuncia_id=denuncia.id,
+        usuario_id=user_id,
+        campo=campo,
+        valor_anterior=old_text,
+        valor_novo=new_text
+    ))
 
 
 @admin_bp.route("/", methods=["GET"])
@@ -40,14 +206,12 @@ def index_page():
 @admin_bp.route("/login", methods=["GET", "POST"])
 def login_admin():
     if request.method == "POST":
-        #data = request.form.to_dict()
-        
-        email = request.form.get("email")
-        senha = request.form.get("password")
+        email = (request.form.get("email") or "").strip()
+        senha = request.form.get("password") or ""
 
         user_obj = (
             db.session.query(Usuario)
-            .filter_by(email=email, senha=senha)
+            .filter_by(email=email)
             .first()
         )
 
@@ -55,7 +219,13 @@ def login_admin():
             flash("Usuário ou senha inválidos", "error")
             return render_template("login_adm.html")
 
-        # 🔑 FLASK-LOGIN
+        if user_obj.is_legacy_password(senha):
+            user_obj.set_password(senha)
+            db.session.commit()
+        elif not user_obj.check_password(senha):
+            flash("Usuário ou senha inválidos", "error")
+            return render_template("login_adm.html")
+
         login_user(user_obj)
                 
         return redirect(url_for("admin.index_page"))
@@ -71,16 +241,59 @@ def logout():
 
 # ============== Painel ADM ====================
 
-@admin_bp.route('/painel', methods=['GET', 'POST'])
+@admin_bp.route('/painel', methods=['GET'])
 @login_required
 def painel():
-    denuncias = (
-        db.session.query(Denuncia)
-        .order_by(Denuncia.data.desc())
-        .all()
+    page = request.args.get("page", 1, type=int)
+    filtros = _get_painel_filters()
+    query_params = _painel_query_params(filtros)
+
+    query = (
+        Denuncia.query
+        .join(Vitima, Denuncia.vitima_id == Vitima.id)
+        .join(Ofesor, Denuncia.ofesor_id == Ofesor.id)
     )
-    denuncias_dict = [d.to_dict() for d in denuncias]
-    return render_template("painel_denuncias.html", denuncias=denuncias_dict)
+    query = _apply_painel_filters(query, filtros)
+    query = _apply_painel_sort(query, filtros["sort"])
+
+    pagination = query.paginate(
+        page=max(page, 1),
+        per_page=filtros["per_page"],
+        error_out=False
+    )
+    denuncias_dict = [d.to_dict() for d in pagination.items]
+
+    return render_template(
+        "painel_denuncias.html",
+        denuncias=denuncias_dict,
+        pagination=pagination,
+        page_links=_build_page_links(pagination, query_params),
+        previous_url=_build_page_url(pagination.prev_num, query_params) if pagination.has_prev else None,
+        next_url=_build_page_url(pagination.next_num, query_params) if pagination.has_next else None,
+        filtros=filtros,
+        resumo=_painel_summary(),
+        total_filtrado=pagination.total,
+        status_options=STATUS_OPTIONS,
+        sort_options=SORT_OPTIONS,
+        prazo_pendente_dias=PRAZO_PENDENTE_DIAS,
+    )
+
+
+@admin_bp.route("/anexos/<int:anexo_id>", methods=["GET"])
+@login_required
+def visualizar_anexo(anexo_id):
+    anexo = DenunciaAnexos.query.get_or_404(anexo_id)
+    filename = os.path.basename(anexo.file_path)
+
+    if not filename:
+        abort(404)
+
+    return send_from_directory(
+        current_app.config["UPLOAD_FOLDER"],
+        filename,
+        as_attachment=False,
+        download_name=anexo.original_name
+    )
 
 
 
@@ -170,9 +383,9 @@ def quatidade_status():
 def atualizar_denuncia(id):
     denuncia = Denuncia.query.get_or_404(id)
 
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
 
-    status = data.get("status")
+    status = data.get("status") or denuncia.status
 
     status_permitidos = [item.value for item in StatusEnum]
 
@@ -182,12 +395,21 @@ def atualizar_denuncia(id):
             "mensagem": "Status inválido."
         }), 400
 
-    denuncia.status = status
+    responsavel = (data.get("responsavel") or "").strip() or None
 
-    denuncia.depoimento_vitima = data.get("depoimento_vitima")
-    denuncia.depoimento_acusado = data.get("depoimento_acusado")
-    denuncia.depoimento_testemunha = data.get("depoimento_testemunha")
-    denuncia.depoimento_admin = data.get("depoimento_admin")
+    campos = {
+        "Status": ("status", status),
+        "Responsável": ("responsavel", responsavel),
+        "Depoimento da vítima": ("depoimento_vitima", data.get("depoimento_vitima")),
+        "Depoimento do acusado": ("depoimento_acusado", data.get("depoimento_acusado")),
+        "Depoimento das testemunhas": ("depoimento_testemunha", data.get("depoimento_testemunha")),
+        "Observações da administração": ("depoimento_admin", data.get("depoimento_admin")),
+    }
+
+    for label, (attr, new_value) in campos.items():
+        old_value = getattr(denuncia, attr)
+        _record_change(denuncia, label, old_value, new_value)
+        setattr(denuncia, attr, new_value)
 
     db.session.commit()
 
@@ -226,6 +448,38 @@ def meses_denuncias():
     })
     
 
+@admin_bp.route("/denuncia/<int:id>/exportar/csv")
+@login_required
+def exportar_denuncia_csv(id):
+    denuncia = Denuncia.query.get_or_404(id)
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow([
+        "ID", "Categoria", "Data", "Status", "Severidade", "Responsável",
+        "Vítima", "Telefone", "Email", "Ofensor", "Descrição"
+    ])
+    writer.writerow([
+        _safe_export_value(denuncia.id),
+        _safe_export_value(denuncia.categoria),
+        _safe_export_value(denuncia.data),
+        _safe_export_value(denuncia.status),
+        _safe_export_value(denuncia.severidade),
+        _safe_export_value(denuncia.responsavel),
+        _safe_export_value(denuncia.vitima.nome if denuncia.vitima else ""),
+        _safe_export_value(denuncia.vitima.telefone if denuncia.vitima else ""),
+        _safe_export_value(denuncia.vitima.email if denuncia.vitima else ""),
+        _safe_export_value(denuncia.ofesor.nome if denuncia.ofesor else ""),
+        _safe_export_value(denuncia.descricao_do_fato),
+    ])
+
+    return Response(
+        output.getvalue(),
+        mimetype="text/csv",
+        headers={"Content-Disposition": f"attachment; filename=denuncia_{denuncia.id}.csv"}
+    )
+
+
 @admin_bp.route("/exportar/csv")
 @login_required
 def exportar_csv():
@@ -234,11 +488,18 @@ def exportar_csv():
     output = io.StringIO()
     writer = csv.writer(output)
     writer.writerow(["ID", "Categoria", "Data", "Status", "Severidade",
-                     "Vítima", "Ofensor", "Descrição"])
+                     "Responsável", "Vítima", "Ofensor", "Descrição"])
     for d in denuncias:
         writer.writerow([
-            d.id, d.categoria, d.data, d.status, d.severidade,
-            d.vitima.nome, d.ofesor.nome, d.descricao_do_fato
+            _safe_export_value(d.id),
+            _safe_export_value(d.categoria),
+            _safe_export_value(d.data),
+            _safe_export_value(d.status),
+            _safe_export_value(d.severidade),
+            _safe_export_value(d.responsavel),
+            _safe_export_value(d.vitima.nome if d.vitima else ""),
+            _safe_export_value(d.ofesor.nome if d.ofesor else ""),
+            _safe_export_value(d.descricao_do_fato)
         ])
     
     return Response(
@@ -258,7 +519,7 @@ def exportar_excel():
     ws.title = "Denúncias"
 
     headers = ["ID", "Categoria", "Data", "Status", "Severidade",
-               "Vítima", "Ofensor", "Descrição"]
+               "Responsável", "Vítima", "Ofensor", "Descrição"]
     ws.append(headers)
 
     for cell in ws[1]:
@@ -267,11 +528,15 @@ def exportar_excel():
 
     for d in Denuncia.query.order_by(Denuncia.data.desc()).all():
         ws.append([
-            d.id, d.categoria, str(d.data) if d.data else "",
-            d.status, d.severidade,
-            d.vitima.nome if d.vitima else "",
-            d.ofesor.nome if d.ofesor else "",
-            d.descricao_do_fato
+            _safe_export_value(d.id),
+            _safe_export_value(d.categoria),
+            _safe_export_value(str(d.data) if d.data else ""),
+            _safe_export_value(d.status),
+            _safe_export_value(d.severidade),
+            _safe_export_value(d.responsavel),
+            _safe_export_value(d.vitima.nome if d.vitima else ""),
+            _safe_export_value(d.ofesor.nome if d.ofesor else ""),
+            _safe_export_value(d.descricao_do_fato)
         ])
 
     ws.column_dimensions["A"].width = 5
@@ -281,7 +546,8 @@ def exportar_excel():
     ws.column_dimensions["E"].width = 10
     ws.column_dimensions["F"].width = 22
     ws.column_dimensions["G"].width = 22
-    ws.column_dimensions["H"].width = 40
+    ws.column_dimensions["H"].width = 22
+    ws.column_dimensions["I"].width = 40
 
     output = io.BytesIO()
     wb.save(output)

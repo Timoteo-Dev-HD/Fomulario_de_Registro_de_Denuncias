@@ -1,3 +1,4 @@
+from datetime import date
 from enum import Enum
 from src.settings.extensions import db
 
@@ -32,6 +33,7 @@ class Denuncia(db.Model):
     status = db.Column(db.String(25), default=StatusEnum.PENDENTE.value, nullable=True)
     severidade = db.Column(db.String(25), nullable=True)
     evidencias = db.Column(db.String(50), nullable=True)
+    responsavel = db.Column(db.String(150), nullable=True)
     
     # Depoimentos
     depoimento_vitima = db.Column(db.Text, nullable=True)
@@ -44,6 +46,12 @@ class Denuncia(db.Model):
         "DenunciaAnexos",
         back_populates='denuncia',
         cascade="all, delete-orphan"
+    )
+    historicos = db.relationship(
+        "DenunciaHistorico",
+        back_populates="denuncia",
+        cascade="all, delete-orphan",
+        order_by="DenunciaHistorico.criado_em.desc()"
     )
     
     
@@ -76,6 +84,11 @@ class Denuncia(db.Model):
         return f"Denuncia: {self.id}"
     
     def to_dict(self):
+        dias_pendente = None
+
+        if self.status == StatusEnum.PENDENTE.value and self.data_public:
+            dias_pendente = (date.today() - self.data_public).days
+
         return {
             "id": self.id,
             "categoria": self.categoria,
@@ -87,8 +100,13 @@ class Denuncia(db.Model):
             "status": self.status,
             "severidade": self.severidade,
             "evidencias": self.evidencias,
+            "responsavel": self.responsavel,
+            "dias_pendente": dias_pendente,
+            "pendente_antiga": dias_pendente is not None and dias_pendente >= 7,
             "depoimento_vit": self.depoimento_vitima,
             "depoimento_acu": self.depoimento_acusado,
+            "depoimento_vitima": self.depoimento_vitima,
+            "depoimento_acusado": self.depoimento_acusado,
             "depoimento_testemunha": self.depoimento_testemunha,
             "depoimento_admin": self.depoimento_admin,
 
@@ -117,5 +135,14 @@ class Denuncia(db.Model):
                     "file_type": anexo.file_type,
                     "original_name": anexo.original_name
                 } for anexo in self.anexos
+            ],
+            "historico": [
+                {
+                    "campo": historico.campo,
+                    "valor_anterior": historico.valor_anterior,
+                    "valor_novo": historico.valor_novo,
+                    "usuario": historico.usuario.nome if historico.usuario else "Sistema",
+                    "criado_em": historico.criado_em.strftime("%d/%m/%Y %H:%M") if historico.criado_em else None
+                } for historico in self.historicos[:8]
             ]
         }

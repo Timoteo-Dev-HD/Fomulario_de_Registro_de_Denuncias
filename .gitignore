@@ -1,4 +1,7 @@
-/home/rafael/Projetos/Fomulario_de_Registro_de_Denuncias/src/views/static/uploads/denuncias/*
+# Uploaded evidence files contain sensitive data and must stay out of Git.
+src/views/static/uploads/denuncias/*
+static/uploads/denuncias/*
+instance/uploads/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
